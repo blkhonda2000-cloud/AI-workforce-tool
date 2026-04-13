@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills-Based Job Description Rewriter — Laurie Wallace HR</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1F3A;--navy-mid:#162E52;--navy-light:#1D4E89;
+  --gold:#C9A84C;--gold-light:#E8D5A3;
+  --white:#FFFFFF;--off-white:#F7F6F2;
+  --text:#0B1F3A;--text-mid:#4A5568;--text-light:#8896AB;
+  --border:#E2E8F0;--success:#1E7A45;--success-bg:#EDF7F1;
+  --warn:#B7641A;--warn-bg:#FDF5EC;
+  --red:#C0392B;--red-bg:#FDF2F1;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off-white);color:var(--text);line-height:1.6}
+.site-header{background:var(--navy);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.2)}
+.header-brand{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.header-meta{font-size:11px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace}
+.hero{background:var(--navy);padding:48px 2rem 56px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.hero-inner{position:relative;z-index:2;max-width:900px;margin:0 auto}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+.hero h1{font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:600;color:var(--white);margin-bottom:12px;line-height:1.2;letter-spacing:-.02em}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.6);max-width:640px;line-height:1.7;margin-bottom:24px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:32px}
+.h-stat{display:flex;flex-direction:column;gap:2px}
+.h-stat-num{font-size:22px;font-weight:600;color:var(--gold);font-family:'DM Mono',monospace}
+.h-stat-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em}
+.main{max-width:900px;margin:0 auto;padding:2rem}
+.sec-label{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:10px}
+.card{background:var(--white);border:.5px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.f-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;display:block}
+.f-hint{font-size:11px;color:var(--text-light);margin-bottom:6px;line-height:1.5}
+select,input[type=text],textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;border:.5px solid var(--border);border-radius:8px;background:var(--white);color:var(--text);outline:none;transition:border-color .15s}
+select:focus,input[type=text]:focus,textarea:focus{border-color:var(--navy-light)}
+textarea{resize:vertical;min-height:100px;line-height:1.6}
+.radio-group{display:flex;flex-wrap:wrap;gap:8px}
+.radio-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border:.5px solid var(--border);border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text-mid);transition:all .15s;background:var(--white);user-select:none}
+.radio-btn:hover{border-color:var(--navy-light);color:var(--navy)}
+.radio-btn.selected{border-color:var(--navy-light);background:rgba(29,78,137,.07);color:var(--navy-light)}
+.radio-dot{width:8px;height:8px;border-radius:50%;border:2px solid currentColor;flex-shrink:0;transition:background .15s}
+.radio-btn.selected .radio-dot{background:var(--navy-light)}
+.rewrite-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:8px;border:none;background:var(--navy);color:var(--white);cursor:pointer;width:100%;margin:1rem 0 1.5rem;letter-spacing:.03em;transition:all .15s}
+.rewrite-btn:hover{background:var(--navy-light);transform:translateY(-1px)}
+.rewrite-btn:active{transform:scale(.99)}
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.5rem}
+.ba-panel{border-radius:12px;padding:1.25rem;border:.5px solid}
+.ba-panel.before{background:var(--red-bg);border-color:#F0B8B4}
+.ba-panel.after{background:var(--success-bg);border-color:#A8DDB8}
+.ba-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ba-badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.07em}
+.badge-before{background:#F7C1C1;color:#7A1F1F}
+.badge-after{background:#A8DDB8;color:#0F4A25}
+.ba-title{font-size:14px;font-weight:600;color:var(--text)}
+.ba-body{font-size:13px;color:var(--text-mid);line-height:1.7}
+.ba-body strong{color:var(--text);font-weight:600}
+.change-list{list-style:none;padding:0;margin:1rem 0 0}
+.change-item{font-size:12px;padding:4px 0 4px 16px;position:relative;color:var(--text-mid);line-height:1.5;border-bottom:.5px solid var(--border)}
+.change-item:last-child{border-bottom:none}
+.change-item::before{content:'✓';position:absolute;left:0;color:var(--success);font-size:11px;top:5px}
+.change-item.removed::before{content:'✗';color:var(--red)}
+.what-changed{background:var(--off-white);border-radius:10px;padding:1rem 1.25rem;margin-top:1rem}
+.wc-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:8px;font-family:'DM Mono',monospace}
+.research-bar{background:rgba(29,78,137,.05);border:.5px solid rgba(29,78,137,.15);border-radius:8px;padding:.875rem 1.25rem;margin-bottom:1.5rem}
+.rb-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--navy-light);margin-bottom:6px;font-family:'DM Mono',monospace}
+.rb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rb-stat{text-align:center}
+.rb-num{font-size:18px;font-weight:600;color:var(--navy);font-family:'DM Mono',monospace}
+.rb-lbl{font-size:10px;color:var(--text-light);margin-top:2px;line-height:1.3}
+.divider{border:none;border-top:.5px solid var(--border);margin:1.5rem 0}
+.src-note{font-size:10px;color:var(--text-light);line-height:1.6;padding-top:8px;border-top:.5px solid var(--border);font-family:'DM Mono',monospace}
+.example-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--off-white);border:.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--text-mid);cursor:pointer;margin:4px 3px;transition:all .15s}
+.example-pill:hover{border-color:var(--navy-light);color:var(--navy);background:rgba(29,78,137,.05)}
+.example-pill.active{border-color:var(--gold);color:var(--navy);background:rgba(201,168,76,.08)}
+.examples-row{display:flex;flex-wrap:wrap;margin-bottom:1rem}
+.page-footer{border-top:.5px solid var(--border);padding:1.25rem 2rem;max-width:900px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.pf-brand{font-size:12px;font-weight:500;color:var(--text)}
+.pf-meta{font-size:11px;color:var(--text-light);font-family:'DM Mono',monospace}
+@media(max-width:640px){
+.before-after{grid-template-columns:1fr}
+.grid2,.grid3,.rb-grid{grid-template-columns:1fr 1fr}
+.main{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <span class="header-brand">Laurie Wallace &nbsp;·&nbsp; HR Strategic Adviser</span>
+  <span class="header-meta">Portfolio Work Product &nbsp;·&nbsp; 2025</span>
+</div>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Skills-Based Hiring &nbsp;·&nbsp; HR Strategy</div>
+    <h1>Skills-Based Job Description Rewriter</h1>
+    <p class="hero-sub">Transform traditional credential-heavy job descriptions into skills-based ones that attract more qualified candidates, reduce bias, and reflect how work actually gets done — across any industry or role level.</p>
+    <div class="hero-stats">
+      <div class="h-stat"><div class="h-stat-num">19x</div><div class="h-stat-lbl">More qualified candidates when degree filters removed</div></div>
+      <div class="h-stat"><div class="h-stat-num">85%</div><div class="h-stat-lbl">of employers now using skills-based hiring approaches</div></div>
+      <div class="h-stat"><div class="h-stat-num">42%</div><div class="h-stat-lbl">of turnover preventable with better role-fit hiring</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="research-bar">
+    <div class="rb-title">Why skills-based job descriptions matter — current research</div>
+    <div class="rb-grid">
+      <div class="rb-stat"><div class="rb-num">85%</div><div class="rb-lbl">of employers now using skills-based hiring — up from 81% last year</div></div>
+      <div class="rb-stat"><div class="rb-num">0.14%</div><div class="rb-lbl">of hires actually impacted — massive gap between intention and execution</div></div>
+      <div class="rb-stat"><div class="rb-num">62%</div><div class="rb-lbl">of HR professionals say skill validation remains their biggest challenge</div></div>
+    </div>
+  </div>
+
+  <p class="sec-label">Step 1 — Select a job title or use an example</p>
+  <div class="card">
+    <div class="f-hint" style="margin-bottom:10px">Click an example to pre-fill the tool — or type your own job title below</div>
+    <div class="examples-row" id="examplesRow">
+      <span class="example-pill" onclick="loadExample('Paralegal')">Paralegal</span>
+      <span class="example-pill" onclick="loadExample('Warehouse Supervisor')">Warehouse Supervisor</span>
+      <span class="example-pill" onclick="loadExample('Customer Service Representative')">Customer Service Rep</span>
+      <span class="example-pill" onclick="loadExample('HR Coordinator')">HR Coordinator</span>
+      <span class="example-pill" onclick="loadExample('Accounts Payable Specialist')">Accounts Payable Specialist</span>
+      <span class="example-pill" onclick="loadExample('Project Manager')">Project Manager</span>
+      <span class="example-pill" onclick="loadExample('Maintenance Technician')">Maintenance Technician</span>
+      <span class="example-pill" onclick="loadExample('Office Manager')">Office Manager</span>
+    </div>
+    <div>
+      <label class="f-label">Job title</label>
+      <input type="text" id="jobTitle" placeholder="e.g. Operations Manager, Billing Coordinator, HR Generalist...">
+    </div>
+  </div>
+
+  <p class="sec-label">Step 2 — Tell us about this role</p>
+  <div class="card">
+    <div class="grid2" style="margin-bottom:1rem">
+      <div>
+        <label class="f-label">Industry</label>
+        <div class="f-hint">Select the closest match</div>
+        <select id="industry">
+          <option value="general">General / Any industry</option>
+          <option value="legal">Legal</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="finance">Financial services</option>
+          <option value="nonprofit">Nonprofit</option>
+          <option value="retail">Retail</option>
+          <option value="tech">Technology</option>
+          <option value="construction">Construction</option>
+          <option value="logistics">Logistics & Distribution</option>
+        </select>
+      </div>
+      <div>
+        <label class="f-label">Role level</label>
+        <div class="f-hint">Select the seniority level</div>
+        <select id="level">
+          <option value="entry">Entry level — 0 to 2 years</option>
+          <option value="mid" selected>Mid level — 3 to 5 years</option>
+          <option value="senior">Senior — 5 to 10 years</option>
+          <option value="manager">Manager / Supervisor</option>
+          <option value="director">Director / VP</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <label class="f-label">What are the 3 to 5 most important things this person will actually DO in this role?</label>
+      <div class="f-hint">Think about day-to-day tasks — not credentials or qualifications. What does success look like?</div>
+      <textarea id="tasks" placeholder="e.g. Respond to client inquiries within 24 hours, maintain accurate case files, draft correspondence for attorney review, coordinate court filings and deadlines..."></textarea>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <label class="f-label">Does this role require a college degree to actually do the job well?</label>
+      <div class="f-hint">Be honest — most roles do not require a degree, they require demonstrated skills and experience</div>
+      <div class="radio-group" id="degreeGroup">
+        <div class="radio-btn" onclick="selectRadio('degree','yes',this)"><div class="radio-dot"></div>Yes — degree is genuinely required</div>
+        <div class="radio-btn selected" onclick="selectRadio('degree','preferred',this)"><div class="radio-dot"></div>Preferred but not required</div>
+        <div class="radio-btn" onclick="selectRadio('degree','no',this)"><div class="radio-dot"></div>No — skills matter more</div>
+      </div>
+    </div>
+
+    <div>
+      <label class="f-label">What does this role interact with most?</label>
+      <div class="f-hint">Select all that apply</div>
+      <div class="radio-group" id="interactGroup">
+        <div class="radio-btn selected" onclick="toggleMulti(this)"><div class="radio-dot"></div>Customers / Clients</div>
+        <div class="radio-btn" onclick="toggleMulti(this)"><div class="radio-dot"></div>Data & Systems</div>
+        <div class="radio-btn" onclick="toggleMulti(this)"><div class="radio-dot"></div>Team Members</div>
+        <div class="radio-btn" onclick="toggleMulti(this)"><div class="radio-dot"></div>Vendors / Partners</div>
+        <div class="radio-btn" onclick="toggleMulti(this)"><div class="radio-dot"></div>Physical Equipment</div>
+        <div class="radio-btn" onclick="toggleMulti(this)"><div class="radio-dot"></div>Documents & Compliance</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="rewrite-btn" onclick="rewrite()">Rewrite as skills-based job description</button>
+
+  <div id="results" style="display:none">
+
+    <div class="research-bar" id="researchContext"></div>
+
+    <p class="sec-label">Before and after — see exactly what changed</p>
+    <div class="before-after">
+      <div class="ba-panel before">
+        <div class="ba-header">
+          <span class="ba-badge badge-before">Traditional version</span>
+        </div>
+        <div class="ba-title" id="beforeTitle"></div>
+        <hr style="border:none;border-top:.5px solid #F0B8B4;margin:10px 0">
+        <div class="ba-body" id="beforeBody"></div>
+      </div>
+      <div class="ba-panel after">
+        <div class="ba-header">
+          <span class="ba-badge badge-after">Skills-based version</span>
+        </div>
+        <div class="ba-title" id="afterTitle"></div>
+        <hr style="border:none;border-top:.5px solid #A8DDB8;margin:10px 0">
+        <div class="ba-body" id="afterBody"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="sec-label">What changed and why it matters</p>
+      <ul class="change-list" id="changeList"></ul>
+
+      <div class="what-changed" id="whatChanged">
+        <div class="wc-title">The core shift in thinking</div>
+        <div id="shiftText" style="font-size:13px;color:var(--text-mid);line-height:1.65"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="sec-label">Skills-based hiring — the research behind this approach</p>
+      <ul class="change-list" id="researchList"></ul>
+      <div class="src-note" style="margin-top:.75rem">Sources: SHRM Skills-Based Hiring Report 2025 · LinkedIn Future of Recruiting 2025 · Burning Glass Institute · Gallup State of the Workplace 2025 · McKinsey Global Institute · Harvard Business School — Dismissed by Degrees · Developed as an independent HR strategy framework by Laurie Wallace — Portfolio Work Product 2025</div>
+    </div>
+
+  </div>
+
+  <div class="page-footer">
+    <div>
+      <div class="pf-brand">Laurie Wallace — HR Strategic Adviser</div>
+      <div class="pf-meta">MBA · PHR · CCP · SHRM-CP · Independent Research 2025 · Philadelphia, PA</div>
+    </div>
+    <div class="pf-meta" style="text-align:right">Skills-Based Job Description Rewriter<br>Portfolio Work Product · laurie-wallace-hr.netlify.app</div>
+  </div>
+
+</div>
+
+<script>
+let degreeVal='preferred';
+
+const EXAMPLES={
+'Paralegal':{
+  industry:'legal',level:'mid',
+  tasks:'Draft legal correspondence and documents for attorney review, maintain and organize case files and court deadlines, coordinate with clients to gather information and provide status updates, prepare exhibits and materials for court filings, conduct preliminary legal research using online databases',
+  degree:'preferred',
+  interact:['Customers / Clients','Documents & Compliance','Team Members']
+},
+'Warehouse Supervisor':{
+  industry:'logistics',level:'manager',
+  tasks:'Oversee daily warehouse operations and coordinate team schedules, ensure accurate receiving and shipping of all inventory, maintain safety standards and conduct regular safety briefings, track inventory levels and flag discrepancies, coach and develop team members on standard operating procedures',
+  degree:'no',
+  interact:['Team Members','Physical Equipment','Data & Systems']
+},
+'Customer Service Representative':{
+  industry:'general',level:'entry',
+  tasks:'Respond to customer inquiries via phone email and chat within service level targets, resolve complaints and escalate complex issues to appropriate team, accurately document all customer interactions in CRM system, identify patterns in customer feedback to share with product and operations teams',
+  degree:'no',
+  interact:['Customers / Clients','Data & Systems','Team Members']
+},
+'HR Coordinator':{
+  industry:'general',level:'entry',
+  tasks:'Support full-cycle recruiting including posting roles, scheduling interviews, and coordinating offers, maintain accurate employee records in HRIS, coordinate onboarding logistics for new hires, assist with benefits enrollment and employee questions, support compliance reporting and audit preparation',
+  degree:'preferred',
+  interact:['Team Members','Documents & Compliance','Data & Systems']
+},
+'Accounts Payable Specialist':{
+  industry:'finance',level:'mid',
+  tasks:'Process vendor invoices accurately and on time, reconcile accounts payable ledger and resolve discrepancies, maintain vendor records and manage communications, prepare weekly payment runs and obtain required approvals, support month-end close activities and audit requests',
+  degree:'no',
+  interact:['Vendors / Partners','Data & Systems','Documents & Compliance']
+},
+'Project Manager':{
+  industry:'general',level:'senior',
+  tasks:'Lead cross-functional project teams from initiation through delivery, develop and maintain project plans, timelines, and budgets, identify and mitigate risks before they impact delivery, communicate project status clearly to stakeholders at all levels, facilitate retrospectives and capture lessons learned for future projects',
+  degree:'preferred',
+  interact:['Team Members','Customers / Clients','Data & Systems']
+},
+'Maintenance Technician':{
+  industry:'manufacturing',level:'mid',
+  tasks:'Perform preventive and corrective maintenance on production equipment, diagnose mechanical and electrical issues and complete repairs with minimal downtime, maintain detailed maintenance logs and work orders, identify recurring equipment problems and recommend permanent solutions, support equipment installations and process improvements',
+  degree:'no',
+  interact:['Physical Equipment','Team Members','Documents & Compliance']
+},
+'Office Manager':{
+  industry:'general',level:'manager',
+  tasks:'Oversee day-to-day office operations and vendor relationships, manage office supply inventory and facilities requests, support HR with onboarding logistics and employee communications, coordinate calendars and meeting logistics for leadership team, maintain organized filing systems and ensure compliance with record retention policies',
+  degree:'preferred',
+  interact:['Team Members','Vendors / Partners','Documents & Compliance']
+}
+};
+
+function loadExample(name){
+  const E=EXAMPLES[name];
+  document.getElementById('jobTitle').value=name;
+  document.getElementById('industry').value=E.industry;
+  document.getElementById('level').value=E.level;
+  document.getElementById('tasks').value=E.tasks;
+  degreeVal=E.degree;
+  document.querySelectorAll('#degreeGroup .radio-btn').forEach(b=>{
+    b.classList.remove('selected');
+    if((b.textContent.includes('genuinely')&&E.degree==='yes')||(b.textContent.includes('Preferred')&&E.degree==='preferred')||(b.textContent.includes('skills')&&E.degree==='no'))b.classList.add('selected');
+  });
+  document.querySelectorAll('#interactGroup .radio-btn').forEach(b=>{
+    const label=b.textContent.trim();
+    if(E.interact.some(i=>label.includes(i.split('/')[0].trim()))){b.classList.add('selected');}else{b.classList.remove('selected');}
+  });
+  document.querySelectorAll('.example-pill').forEach(p=>{
+    p.classList.toggle('active',p.textContent.trim()===name||p.textContent.trim()===name.replace(' Representative','Rep'));
+  });
+}
+
+function selectRadio(group,val,el){
+  degreeVal=val;
+  document.querySelectorAll('#'+group+'Group .radio-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleMulti(el){el.classList.toggle('selected')}
+
+function getSelected(groupId){
+  return Array.from(document.querySelectorAll('#'+groupId+' .radio-btn.selected')).map(b=>b.textContent.trim());
+}
+
+function rewrite(){
+  const title=document.getElementById('jobTitle').value.trim()||'This Role';
+  const industry=document.getElementById('industry').value;
+  const level=document.getElementById('level').value;
+  const tasks=document.getElementById('tasks').value.trim();
+  const interact=getSelected('interactGroup');
+
+  const levelLabel={entry:'Entry Level',mid:'Mid Level',senior:'Senior',manager:'Manager / Supervisor',director:'Director / VP'}[level];
+  const industryLabel={general:'',legal:'Legal',healthcare:'Healthcare',manufacturing:'Manufacturing',finance:'Financial Services',nonprofit:'Nonprofit',retail:'Retail',tech:'Technology',construction:'Construction',logistics:'Logistics'}[industry];
+
+  const taskLines=tasks?tasks.split(/[,\n;]+/).map(t=>t.trim()).filter(t=>t.length>8).slice(0,6):['Complete core responsibilities','Collaborate with team members','Maintain accurate records','Support organizational goals'];
+
+  const degreeText={yes:'Bachelor\'s degree required',preferred:'Bachelor\'s degree preferred',no:'High school diploma or equivalent'}[degreeVal];
+  const degreeSkillsText={yes:'Bachelor\'s degree in related field required',preferred:'Equivalent combination of education and demonstrated experience considered in place of degree',no:'No degree required — demonstrated skills and experience are what matter'}[degreeVal];
+
+  const expText={entry:'0-2 years of related experience',mid:'3-5 years of relevant experience',senior:'5-10 years of progressive experience',manager:'3+ years in a supervisory or team lead role',director:'8+ years with 3+ years in a leadership role'}[level];
+  const expSkillsText={entry:'0-2 years — or demonstrated ability to perform the core responsibilities of this role',mid:'3-5 years — or proven track record of delivering comparable results in a similar environment',senior:'5-10 years of progressive, demonstrable experience with specific examples of impact',manager:'3+ years managing or coaching others — proven ability to develop team performance',director:'8+ years with documented leadership impact across functions or business units'}[level];
+
+  const interactSkills=interact.map(i=>{
+    const map={'Customers / Clients':'Strong communication and relationship-building skills — demonstrated through direct client or customer interaction','Data & Systems':'Proficiency with relevant technology platforms — ability to learn new systems quickly and work accurately with data','Team Members':'Collaborative mindset with proven ability to work effectively across teams and functions','Vendors / Partners':'Experience coordinating with external partners — ability to manage relationships and expectations professionally','Physical Equipment':'Hands-on mechanical aptitude and demonstrated ability to work safely with equipment','Documents & Compliance':'Attention to detail and track record of maintaining accurate records and meeting compliance requirements'};
+    return map[i]||i;
+  });
+
+  // BEFORE
+  const beforeHTML=`
+<strong>Position: ${title}</strong><br><br>
+<strong>Requirements:</strong><br>
+• ${degreeText}<br>
+• ${expText}<br>
+• Strong communication skills<br>
+• Proficiency in Microsoft Office<br>
+• Must be detail-oriented and organized<br>
+• Ability to multitask in a fast-paced environment<br><br>
+<strong>Responsibilities:</strong><br>
+${taskLines.map(t=>`• Responsible for ${t.toLowerCase()}`).join('<br>')}
+`;
+
+  // AFTER
+  const afterHTML=`
+<strong>Position: ${title}${industryLabel?' — '+industryLabel:''} &nbsp;|&nbsp; ${levelLabel}</strong><br><br>
+<strong>What you will do — the work that matters:</strong><br>
+${taskLines.map(t=>`• ${t.charAt(0).toUpperCase()+t.slice(1)}`).join('<br>')}<br><br>
+<strong>Skills that set you up for success:</strong><br>
+${interactSkills.map(s=>`• ${s}`).join('<br>')}<br><br>
+<strong>Experience and background:</strong><br>
+• ${expSkillsText}<br>
+• ${degreeSkillsText}<br><br>
+<strong>You will thrive in this role if you:</strong><br>
+• Take ownership of your work and follow through without being reminded<br>
+• Communicate clearly and proactively — especially when priorities shift<br>
+• Are curious about improving how work gets done, not just completing tasks
+`;
+
+  document.getElementById('beforeTitle').innerHTML=`<strong>${title} — Traditional</strong>`;
+  document.getElementById('beforeBody').innerHTML=beforeHTML;
+  document.getElementById('afterTitle').innerHTML=`<strong>${title} — Skills-Based</strong>`;
+  document.getElementById('afterBody').innerHTML=afterHTML;
+
+  const changes=[
+    {text:`Degree requirement changed from "${degreeText}" to "${degreeSkillsText.split('—')[0].trim()}" — opens the candidate pool without lowering the bar`,removed:false},
+    {text:'Removed vague language — "detail-oriented," "multitask," "fast-paced" — replaced with specific observable behaviors',removed:true},
+    {text:'Responsibilities reframed as outcomes the person owns — not tasks they are "responsible for"',removed:false},
+    {text:'Added skills section tied directly to what this role actually interacts with — not a generic list',removed:false},
+    {text:'Experience requirement now anchors to demonstrated ability — not just years of time served',removed:false},
+    {text:'Added "You will thrive if you..." section — attracts self-aware candidates and filters out poor role fit before the interview',removed:false}
+  ];
+
+  document.getElementById('changeList').innerHTML=changes.map(c=>`<li class="change-item${c.removed?' removed':''}">${c.text}</li>`).join('');
+
+  const shift=degreeVal==='no'?
+    `This role did not need a degree — it needed someone who can actually do the work. By removing that filter, the qualified candidate pool increases by up to 19 times according to LinkedIn research. The skills-based version describes what success looks like in the role — not what an applicant's resume looks like on paper.`:
+    degreeVal==='preferred'?
+    `By changing "degree required" to "equivalent experience considered," this description stays open to candidates who have built the same capabilities through different paths. This single change typically increases qualified applicants by 30-50% without changing the standard of performance expected.`:
+    `This role has always required a degree and that remains accurate — but the rest of the description has been transformed to focus on what the person will actually do and what skills will make them successful, rather than defaulting to generic qualifiers that any candidate can claim.`;
+
+  document.getElementById('shiftText').textContent=shift;
+
+  const research=[
+    'Removing degree requirements can increase your qualified candidate pool by up to 19 times — LinkedIn Future of Recruiting 2025',
+    '85% of employers say they are using skills-based hiring — but only 0.14% of actual hires reflect it, revealing a massive execution gap — SHRM 2025',
+    'Vague qualifiers like "strong communication skills" and "detail-oriented" appear in over 80% of job descriptions yet predict almost nothing about job performance — Burning Glass Institute',
+    'Skills-based hires stay 9% longer than credential-based hires and are 18% more likely to be high performers — Harvard Business School research',
+    '62% of HR professionals say skill validation remains their biggest hiring challenge — SHRM 2025',
+    'Job descriptions are the single highest-impact place to begin skills-based hiring reform — they filter candidates before a human ever reviews a resume'
+  ];
+
+  document.getElementById('researchList').innerHTML=research.map(r=>`<li class="change-item">${r}</li>`).join('');
+
+  document.getElementById('researchContext').innerHTML=`
+    <div class="rb-title">Rewrite complete — ${title} &nbsp;·&nbsp; ${levelLabel}${industryLabel?' &nbsp;·&nbsp; '+industryLabel:''}</div>
+    <div style="font-size:12px;color:var(--text-mid);line-height:1.6">
+      The rewritten description focuses on what this person will actually do, the specific skills that predict success, and removes credential barriers that filter out qualified candidates without improving hire quality. Scroll down to see the full before and after comparison.
+    </div>`;
+
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>

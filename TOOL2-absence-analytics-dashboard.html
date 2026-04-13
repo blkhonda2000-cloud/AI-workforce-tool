@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absence Analytics Dashboard — Apex Specialty Polymers</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --surface2: #F0EEE8;
+    --border: #E2DED4;
+    --border2: #C8C4B8;
+    --text: #1A1916;
+    --text2: #6B6860;
+    --text3: #9E9B94;
+    --accent: #1D4E89;
+    --accent-light: #E8EFF7;
+    --high: #C0392B;
+    --high-bg: #FDF2F1;
+    --high-border: #F0B8B4;
+    --med: #B7641A;
+    --med-bg: #FDF5EC;
+    --med-border: #F0D0A8;
+    --low: #1E7A45;
+    --low-bg: #EDF7F1;
+    --low-border: #A8DDB8;
+    --warn: #8B1A1A;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .site-header { background: var(--accent); color: white; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .site-header .brand { font-size: 13px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.9; }
+  .site-header .meta { font-size: 12px; opacity: 0.65; font-family: 'DM Mono', monospace; }
+
+  .hero { background: var(--surface); border-bottom: 1px solid var(--border); padding: 2rem 2rem 1.5rem; }
+  .hero-inner { max-width: 1000px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-family: 'DM Mono', monospace; }
+  .hero h1 { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1.25; margin-bottom: 8px; }
+  .hero p { font-size: 14px; color: var(--text2); line-height: 1.6; max-width: 620px; margin-bottom: 1.25rem; }
+  .hero-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .hero-meta-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
+
+  .main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+
+  .critical-alert { background: #FDF2F1; border: 1.5px solid #E24B4A; border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.75rem; display: flex; gap: 12px; align-items: flex-start; }
+  .alert-icon { width: 20px; height: 20px; background: #E24B4A; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .alert-icon span { color: white; font-size: 12px; font-weight: 700; }
+  .alert-text strong { font-size: 13px; font-weight: 600; color: #7A2020; display: block; margin-bottom: 3px; }
+  .alert-text p { font-size: 12px; color: #A32D2D; line-height: 1.5; }
+
+  .summary-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.75rem; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; }
+  .metric-label { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .metric-value { font-size: 26px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
+  .metric-value.red { color: var(--high); }
+  .metric-value.amber { color: var(--med); }
+  .metric-value.green { color: var(--low); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  .tab-row { display: flex; gap: 4px; margin-bottom: 1.75rem; background: var(--surface2); padding: 4px; border-radius: var(--radius); width: 100%; overflow-x: auto; }
+  .tab-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 7px; border: none; background: transparent; cursor: pointer; color: var(--text2); transition: all 0.15s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 10px; }
+
+  /* TABLE STYLES */
+  .data-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface2); }
+  th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .flag-red { background: #FDF2F1; color: var(--high); font-weight: 600; border-radius: 4px; padding: 2px 6px; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .flag-amber { background: var(--med-bg); color: var(--med); font-weight: 600; border-radius: 4px; padding: 2px 6px; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .flag-green { background: var(--low-bg); color: var(--low); font-weight: 500; border-radius: 4px; padding: 2px 6px; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .badge-agency { background: #E8EFF7; color: var(--accent); font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; margin-left: 6px; }
+
+  /* HEATMAP */
+  .heatmap-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; overflow-x: auto; }
+  .heatmap-table { width: 100%; border-collapse: separate; border-spacing: 3px; }
+  .heatmap-table th { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; text-align: center; padding: 4px 8px; font-weight: 500; }
+  .heatmap-table th.dept-col { text-align: left; min-width: 160px; }
+  .hm-cell { padding: 8px 10px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; cursor: default; transition: transform 0.1s; position: relative; }
+  .hm-cell:hover { transform: scale(1.08); z-index: 2; }
+  .hm-cell.c0 { background: #EDF7F1; color: #1E7A45; }
+  .hm-cell.c1 { background: #FDF5EC; color: #B7641A; }
+  .hm-cell.c2 { background: #FAEEDA; color: #B7641A; }
+  .hm-cell.c3 { background: #FDF2F1; color: #C0392B; }
+  .hm-cell.c4 { background: #F7C1C1; color: #7A1F1F; }
+  .hm-dept { font-size: 12px; font-weight: 500; color: var(--text); padding: 8px 4px; }
+  .dot-flag { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #E24B4A; margin-left: 4px; vertical-align: middle; }
+
+  /* TREND CHART */
+  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .chart-area { position: relative; height: 280px; margin-top: 1rem; }
+  canvas { width: 100% !important; }
+
+  /* COACHING / RCA CARDS */
+  .coaching-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .coaching-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .coaching-card.critical { border-color: var(--high-border); background: var(--high-bg); }
+  .coaching-card.warning { border-color: var(--med-border); background: var(--med-bg); }
+  .cc-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
+  .cc-dept { font-size: 14px; font-weight: 600; color: var(--text); }
+  .cc-rate { font-size: 13px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .cc-rate.red { color: var(--high); }
+  .cc-rate.amber { color: var(--med); }
+  .cc-section { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin: 10px 0 5px; font-family: 'DM Mono', monospace; }
+  .cc-list { list-style: none; }
+  .cc-list li { font-size: 12px; color: var(--text2); padding: 3px 0; padding-left: 14px; position: relative; line-height: 1.5; }
+  .cc-list li::before { content: '→'; position: absolute; left: 0; color: var(--text3); font-size: 11px; }
+  .cc-list li.priority::before { content: '★'; color: var(--accent); }
+
+  /* SHIFT ANALYSIS */
+  .shift-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .shift-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .shift-card.critical { border-color: var(--high-border); }
+  .shift-num { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .shift-rate { font-size: 32px; font-weight: 600; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+  .shift-rate.green { color: var(--low); }
+  .shift-rate.amber { color: var(--med); }
+  .shift-rate.red { color: var(--high); }
+  .shift-label { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+  .shift-bar-bg { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+  .shift-bar-fill { height: 8px; border-radius: 4px; }
+  .shift-notes { font-size: 11px; color: var(--text3); line-height: 1.6; }
+  .shift-notes strong { color: var(--text2); font-weight: 500; }
+
+  .info-box { background: var(--accent-light); border: 1px solid #C4D8EF; border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .info-box strong { color: var(--accent); font-weight: 600; }
+
+  .card-footer { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 1rem; font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+  .page-footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; max-width: 1000px; margin: 2rem auto 0; }
+  .page-footer-inner { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+  .footer-brand { font-size: 13px; font-weight: 500; color: var(--text); }
+  .footer-meta { font-size: 11px; color: var(--text3); margin-top: 4px; font-family: 'DM Mono', monospace; line-height: 1.7; }
+  .footer-disclaimer { font-size: 11px; color: var(--text3); max-width: 380px; line-height: 1.6; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+  @media (max-width: 680px) {
+    .summary-metrics { grid-template-columns: repeat(2, 1fr); }
+    .coaching-grid { grid-template-columns: 1fr; }
+    .shift-grid { grid-template-columns: 1fr; }
+    .main { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="brand">Laurie Wallace &nbsp;·&nbsp; HR Strategic Adviser</span>
+  <span class="meta">Portfolio Work Product &nbsp;·&nbsp; 2025</span>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">HR Analytics &amp; Workforce Strategy &nbsp;·&nbsp; Case Study: Apex Specialty Polymers</div>
+    <h1>Q1 Absence Analytics Dashboard</h1>
+    <p>A five-view HR analytics framework translating raw ADP absence data into actionable workforce interventions — demonstrating end-to-end HR strategic thinking from data to decision.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><div class="dot"></div>300-employee plastics manufacturing facility</div>
+      <div class="hero-meta-item"><div class="dot"></div>3 shifts · Monday–Friday</div>
+      <div class="hero-meta-item"><div class="dot"></div>8% absence threshold</div>
+      <div class="hero-meta-item"><div class="dot"></div>Q1 2025 · Fictionalized case study</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="critical-alert">
+    <div class="alert-icon"><span>!</span></div>
+    <div class="alert-text">
+      <strong>Critical workforce risk — Maintenance &amp; Facilities</strong>
+      <p>Mold maintenance technicians are a highly specialized trade with limited replacement availability. A single absence in this department can trigger machine downtime, production line stoppages, and cascading overtime across all three shifts. This department requires priority intervention beyond standard attendance management.</p>
+    </div>
+  </div>
+
+  <div class="summary-metrics">
+    <div class="metric-card">
+      <div class="metric-label">Facility avg absence</div>
+      <div class="metric-value amber">7.4%</div>
+      <div class="metric-sub">vs 8% threshold</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Departments flagged</div>
+      <div class="metric-value red">4</div>
+      <div class="metric-sub">of 6 departments</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Highest absence</div>
+      <div class="metric-value red">11.3%</div>
+      <div class="metric-sub">3rd shift · March</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Agency utilization</div>
+      <div class="metric-value amber">18%</div>
+      <div class="metric-sub">of production headcount</div>
+    </div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="showTab('raw')">Raw ADP data</button>
+    <button class="tab-btn" onclick="showTab('heatmap')">Heatmap view</button>
+    <button class="tab-btn" onclick="showTab('trend')">Trend chart</button>
+    <button class="tab-btn" onclick="showTab('coaching')">Manager coaching plan</button>
+    <button class="tab-btn" onclick="showTab('rca')">Root cause analysis</button>
+    <button class="tab-btn" onclick="showTab('shift')">Shift analysis</button>
+  </div>
+
+  <!-- TAB 1: RAW DATA -->
+  <div id="tab-raw">
+    <p class="section-label">Q1 absence data by department — exported from ADP Workforce Now</p>
+    <div class="info-box">
+      <strong>How to read this table:</strong> Figures represent absence rate as a percentage of scheduled hours per department per month. Values highlighted in red exceed the 8% threshold and are flagged for manager review. Amber indicates a rising trend approaching the threshold. The staffing agency supplement is noted where applicable — agency workers are not included in the absence rate calculation but are tracked separately as a coverage cost indicator.
+    </div>
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Headcount</th>
+            <th>January</th>
+            <th>February</th>
+            <th>March</th>
+            <th>Q1 Avg</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Production / Molding</strong><span class="badge-agency">+ agency</span></td>
+            <td>142</td>
+            <td><span class="flag-red">9.2%</span></td>
+            <td><span class="flag-red">8.8%</span></td>
+            <td><span class="flag-red">10.1%</span></td>
+            <td><span class="flag-red">9.4%</span></td>
+            <td><span class="flag-red">Flagged</span></td>
+          </tr>
+          <tr>
+            <td><strong>Maintenance &amp; Facilities</strong></td>
+            <td>28</td>
+            <td><span class="flag-amber">7.6%</span></td>
+            <td><span class="flag-red">9.1%</span></td>
+            <td><span class="flag-red">10.4%</span></td>
+            <td><span class="flag-red">9.0%</span></td>
+            <td><span class="flag-red">Critical</span></td>
+          </tr>
+          <tr>
+            <td><strong>Quality Control</strong></td>
+            <td>34</td>
+            <td><span class="flag-green">5.8%</span></td>
+            <td><span class="flag-amber">7.2%</span></td>
+            <td><span class="flag-red">8.9%</span></td>
+            <td><span class="flag-amber">7.3%</span></td>
+            <td><span class="flag-amber">Trending up</span></td>
+          </tr>
+          <tr>
+            <td><strong>Shipping &amp; Receiving</strong></td>
+            <td>38</td>
+            <td><span class="flag-red">8.4%</span></td>
+            <td><span class="flag-red">9.0%</span></td>
+            <td><span class="flag-red">8.7%</span></td>
+            <td><span class="flag-red">8.7%</span></td>
+            <td><span class="flag-red">Flagged</span></td>
+          </tr>
+          <tr>
+            <td><strong>Operations</strong></td>
+            <td>44</td>
+            <td><span class="flag-amber">6.9%</span></td>
+            <td><span class="flag-amber">7.4%</span></td>
+            <td><span class="flag-amber">7.8%</span></td>
+            <td><span class="flag-amber">7.4%</span></td>
+            <td><span class="flag-amber">Monitor</span></td>
+          </tr>
+          <tr>
+            <td><strong>HR / Payroll / Admin</strong></td>
+            <td>14</td>
+            <td><span class="flag-green">3.1%</span></td>
+            <td><span class="flag-green">3.4%</span></td>
+            <td><span class="flag-green">4.2%</span></td>
+            <td><span class="flag-green">3.6%</span></td>
+            <td><span class="flag-green">On target</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">Source: ADP Workforce Now Q1 export &nbsp;·&nbsp; Apex Specialty Polymers &nbsp;·&nbsp; Fictionalized case study — Laurie Wallace HR Strategic Adviser 2025</div>
+  </div>
+
+  <!-- TAB 2: HEATMAP -->
+  <div id="tab-heatmap" style="display:none;">
+    <p class="section-label">Visual heatmap — absence intensity by department and month</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:#EDF7F1;border:1px solid #A8DDB8;"></div>Under 6% — on target</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#FDF5EC;border:1px solid #F0D0A8;"></div>6–7.9% — monitor</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#FAEEDA;border:1px solid #F0D0A8;"></div>8–8.9% — at threshold</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#FDF2F1;border:1px solid #F0B8B4;"></div>9–10% — flagged</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#F7C1C1;border:1px solid #E24B4A;"></div>10%+ — critical</div>
+    </div>
+    <div class="heatmap-wrap">
+      <table class="heatmap-table">
+        <thead>
+          <tr>
+            <th class="dept-col">Department</th>
+            <th>January</th>
+            <th>February</th>
+            <th>March</th>
+            <th>Q1 Avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="hm-dept">Production / Molding <span class="badge-agency">+ agency</span></td>
+            <td><div class="hm-cell c3">9.2%</div></td>
+            <td><div class="hm-cell c3">8.8%</div></td>
+            <td><div class="hm-cell c4">10.1% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c3">9.4%</div></td>
+          </tr>
+          <tr>
+            <td class="hm-dept">Maintenance &amp; Facilities</td>
+            <td><div class="hm-cell c1">7.6%</div></td>
+            <td><div class="hm-cell c3">9.1% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c4">10.4% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c3">9.0%</div></td>
+          </tr>
+          <tr>
+            <td class="hm-dept">Quality Control</td>
+            <td><div class="hm-cell c0">5.8%</div></td>
+            <td><div class="hm-cell c1">7.2%</div></td>
+            <td><div class="hm-cell c3">8.9% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c1">7.3%</div></td>
+          </tr>
+          <tr>
+            <td class="hm-dept">Shipping &amp; Receiving</td>
+            <td><div class="hm-cell c2">8.4% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c3">9.0% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c3">8.7% <span class="dot-flag"></span></div></td>
+            <td><div class="hm-cell c3">8.7%</div></td>
+          </tr>
+          <tr>
+            <td class="hm-dept">Operations</td>
+            <td><div class="hm-cell c1">6.9%</div></td>
+            <td><div class="hm-cell c1">7.4%</div></td>
+            <td><div class="hm-cell c1">7.8%</div></td>
+            <td><div class="hm-cell c1">7.4%</div></td>
+          </tr>
+          <tr>
+            <td class="hm-dept">HR / Payroll / Admin</td>
+            <td><div class="hm-cell c0">3.1%</div></td>
+            <td><div class="hm-cell c0">3.4%</div></td>
+            <td><div class="hm-cell c0">4.2%</div></td>
+            <td><div class="hm-cell c0">3.6%</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:1rem;">Red dot indicators mark cells where manager coaching or HR intervention is recommended.</p>
+    <div class="card-footer">Apex Specialty Polymers Q1 Absence Heatmap &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Portfolio Work Product 2025</div>
+  </div>
+
+  <!-- TAB 3: TREND CHART -->
+  <div id="tab-trend" style="display:none;">
+    <p class="section-label">Month-by-month absence trend — Q1 2025</p>
+    <div class="chart-wrap">
+      <canvas id="trendChart" height="280"></canvas>
+    </div>
+    <div class="info-box">
+      <strong>Key insight:</strong> The facility-wide trend is escalating across Q1 — every department except HR/Admin shows a rising pattern from January through March. Production/Molding and Maintenance are already critical. Quality Control's sharp March spike warrants immediate attention as an early warning signal before it crosses the threshold in Q2.
+    </div>
+    <div class="card-footer">Apex Specialty Polymers Q1 Trend Analysis &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Portfolio Work Product 2025</div>
+  </div>
+
+  <!-- TAB 4: COACHING -->
+  <div id="tab-coaching" style="display:none;">
+    <p class="section-label">Manager coaching recommendations — flagged departments</p>
+    <div class="info-box">
+      <strong>HR strategic principle:</strong> Absence data identifies WHERE the problem exists. Manager coaching targets HOW leadership behavior may be contributing. This plan pairs data findings with specific, actionable coaching conversations tailored to each department's context and absence pattern.
+    </div>
+    <div class="coaching-grid">
+      <div class="coaching-card critical">
+        <div class="cc-header">
+          <div class="cc-dept">Production / Molding</div>
+          <div class="cc-rate red">9.4% Q1 avg</div>
+        </div>
+        <div class="cc-section">Coaching focus areas</div>
+        <ul class="cc-list">
+          <li class="priority">Shift consistency — review how 2nd and 3rd shift supervisors communicate expectations vs. 1st shift</li>
+          <li class="priority">Agency worker integration — are direct employees feeling devalued when agency fills their gaps?</li>
+          <li>Monday pattern analysis — pull day-of-week data to identify chronic Monday callouts</li>
+          <li>Physical environment check — heat, ergonomics, and repetitive motion on molding floor</li>
+          <li>Supervisor availability — are supervisors accessible and supportive or perceived as distant?</li>
+        </ul>
+        <div class="cc-section">Recommended interventions</div>
+        <ul class="cc-list">
+          <li>Stay interviews with 2nd and 3rd shift employees specifically</li>
+          <li>Return-to-work structured conversations after each absence event</li>
+          <li>Shift supervisor coaching on recognition and daily communication</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card critical">
+        <div class="cc-header">
+          <div class="cc-dept">Maintenance &amp; Facilities</div>
+          <div class="cc-rate red">9.0% Q1 avg · CRITICAL</div>
+        </div>
+        <div class="cc-section">Coaching focus areas</div>
+        <ul class="cc-list">
+          <li class="priority">Workload distribution — are mold maintenance techs carrying disproportionate load due to understaffing?</li>
+          <li class="priority">Burnout indicators — escalating absence in a small specialized team signals chronic overwork</li>
+          <li>Supervisor responsiveness — does management acknowledge the scarcity challenge openly?</li>
+          <li>Retention risk — each absence in this team raises probability of resignation</li>
+        </ul>
+        <div class="cc-section">Recommended interventions</div>
+        <ul class="cc-list">
+          <li>Urgent retention conversation with each mold maintenance tech individually</li>
+          <li>Workload audit — is overtime chronic and unsustainable?</li>
+          <li>Compensation review — are specialized techs compensated at market rate?</li>
+          <li>Cross-training pipeline — begin identifying internal candidates to develop</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card warning">
+        <div class="cc-header">
+          <div class="cc-dept">Shipping &amp; Receiving</div>
+          <div class="cc-rate red">8.7% Q1 avg</div>
+        </div>
+        <div class="cc-section">Coaching focus areas</div>
+        <ul class="cc-list">
+          <li class="priority">Consistency — absence has been above threshold all three months, suggesting systemic issue not a spike</li>
+          <li>Physical demands — end-of-shift fatigue and physical load in receiving area</li>
+          <li>Manager communication style — are expectations and consequences clearly communicated?</li>
+        </ul>
+        <div class="cc-section">Recommended interventions</div>
+        <ul class="cc-list">
+          <li>Attendance policy review and consistent application coaching for supervisor</li>
+          <li>Ergonomic assessment of shipping/receiving floor</li>
+          <li>Pulse survey targeting this department specifically</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card warning">
+        <div class="cc-header">
+          <div class="cc-dept">Quality Control</div>
+          <div class="cc-rate amber">7.3% Q1 avg · Trending</div>
+        </div>
+        <div class="cc-section">Coaching focus areas</div>
+        <ul class="cc-list">
+          <li class="priority">Early warning — January was fine, March hit 8.9% — something changed mid-quarter</li>
+          <li>QC role stress — increased production pressure often flows downstream to QC as rejection rates rise</li>
+          <li>Relationship between QC and Production — tension between departments can drive QC disengagement</li>
+        </ul>
+        <div class="cc-section">Recommended interventions</div>
+        <ul class="cc-list">
+          <li>Proactive manager check-in before this becomes a Q2 crisis</li>
+          <li>Review whether production pressure increases in March correlated with QC absence spike</li>
+          <li>Engagement conversation with QC team lead</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-footer">Apex Specialty Polymers Manager Coaching Plan &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Portfolio Work Product 2025</div>
+  </div>
+
+  <!-- TAB 5: ROOT CAUSE ANALYSIS -->
+  <div id="tab-rca" style="display:none;">
+    <p class="section-label">Root cause analysis — diagnosing the right intervention</p>
+    <div class="info-box">
+      <strong>HR strategic principle:</strong> The data tells you WHERE the problem is. Root cause analysis tells you WHY — and therefore WHAT to do about it. The same absence rate can have completely different causes requiring completely different interventions. This framework prevents HR from applying generic solutions to specific problems.
+    </div>
+    <div class="coaching-grid">
+      <div class="coaching-card critical">
+        <div class="cc-header">
+          <div class="cc-dept">Production / Molding</div>
+          <div class="cc-rate red">Pattern: Escalating</div>
+        </div>
+        <div class="cc-section">Probable root causes — ranked</div>
+        <ul class="cc-list">
+          <li class="priority">Shift fatigue — 2nd and 3rd shift physical demands compounded by consecutive scheduling</li>
+          <li class="priority">Agency worker dynamic — permanent employees may feel reduced accountability when gaps are always covered</li>
+          <li>Post-holiday burnout — Q1 January start compounds with unresolved December fatigue</li>
+          <li>Ergonomic stress — injection molding floor heat and repetitive motion</li>
+          <li>Supervisor inconsistency across shifts — 1st shift notably lower absence</li>
+          <li>Attendance policy applied unevenly across shifts</li>
+        </ul>
+        <div class="cc-section">Prioritized interventions</div>
+        <ul class="cc-list">
+          <li class="priority">Stay interviews targeting 2nd and 3rd shift exclusively</li>
+          <li class="priority">Agency strategy review — are coverage guarantees reducing absence accountability?</li>
+          <li>Shift supervisor calibration session — align expectations across all three shifts</li>
+          <li>EAP awareness campaign — Q1 is highest stress period for manufacturing workers</li>
+          <li>Ergonomic assessment of molding floor stations</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card critical">
+        <div class="cc-header">
+          <div class="cc-dept">Maintenance &amp; Facilities</div>
+          <div class="cc-rate red">Pattern: Escalating · CRITICAL</div>
+        </div>
+        <div class="cc-section">Probable root causes — ranked</div>
+        <ul class="cc-list">
+          <li class="priority">Chronic overwork — small specialized team absorbing outsized workload due to hiring scarcity</li>
+          <li class="priority">Burnout trajectory — escalating monthly absence in small teams is a resignation precursor</li>
+          <li>Compensation misalignment — mold maintenance techs are market-scarce and may be underpaid</li>
+          <li>Physical toll — mold maintenance is physically demanding and injury-prone</li>
+          <li>Recognition gap — specialized skill often goes unacknowledged by general management</li>
+        </ul>
+        <div class="cc-section">Prioritized interventions</div>
+        <ul class="cc-list">
+          <li class="priority">Immediate retention conversations — individual meetings with each tech this week</li>
+          <li class="priority">Compensation benchmarking — verify market rate for mold maintenance techs in this region</li>
+          <li>Workload audit — document overtime hours over last 90 days</li>
+          <li>Cross-training pipeline — identify and begin developing internal succession candidates</li>
+          <li>Workers comp review — check for unreported or underreported strain injuries</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card warning">
+        <div class="cc-header">
+          <div class="cc-dept">Shipping &amp; Receiving</div>
+          <div class="cc-rate red">Pattern: Chronic/Flat</div>
+        </div>
+        <div class="cc-section">Probable root causes — ranked</div>
+        <ul class="cc-list">
+          <li class="priority">Policy inconsistency — flat chronic pattern suggests absence is culturally normalized in this dept</li>
+          <li>Supervisor follow-through gap — absence consequences not applied consistently</li>
+          <li>Physical demands — end-of-day load fatigue particularly in receiving</li>
+          <li>Low engagement — absence as passive disengagement signal</li>
+        </ul>
+        <div class="cc-section">Prioritized interventions</div>
+        <ul class="cc-list">
+          <li class="priority">Attendance policy review and relaunch with consistent enforcement</li>
+          <li>Supervisor coaching on documentation and progressive discipline</li>
+          <li>Engagement pulse survey</li>
+          <li>Return-to-work structured conversation protocol</li>
+        </ul>
+      </div>
+
+      <div class="coaching-card warning">
+        <div class="cc-header">
+          <div class="cc-dept">Quality Control</div>
+          <div class="cc-rate amber">Pattern: Emerging spike</div>
+        </div>
+        <div class="cc-section">Probable root causes — ranked</div>
+        <ul class="cc-list">
+          <li class="priority">Production pressure spillover — March production push likely increased QC rejection pressure</li>
+          <li>Interdepartmental tension — QC/Production friction is a common manufacturing stressor</li>
+          <li>Role stress — QC carries quality accountability without always having authority to slow production</li>
+        </ul>
+        <div class="cc-section">Prioritized interventions</div>
+        <ul class="cc-list">
+          <li class="priority">Proactive stay interviews before Q2 — catch this before it becomes chronic</li>
+          <li>Review March production targets and QC rejection data for correlation</li>
+          <li>Manager check-in with QC team lead this week</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-footer">Apex Specialty Polymers Root Cause Analysis &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Portfolio Work Product 2025</div>
+  </div>
+
+  <!-- TAB 6: SHIFT ANALYSIS -->
+  <div id="tab-shift" style="display:none;">
+    <p class="section-label">Absence by shift — Q1 2025 average</p>
+    <div class="shift-grid">
+      <div class="shift-card">
+        <div class="shift-num">1st shift · 6am–2pm</div>
+        <div class="shift-rate green">4.9%</div>
+        <div class="shift-label">Below threshold — performing well</div>
+        <div class="shift-bar-bg"><div class="shift-bar-fill" style="width:49%;background:var(--low);"></div></div>
+        <div class="shift-notes">
+          <strong>Headcount:</strong> ~100 direct + 20 agency<br>
+          <strong>Pattern:</strong> Stable across Q1 — January 4.6%, February 4.8%, March 5.3%<br>
+          <strong>Note:</strong> Lower physical fatigue, better supervisor coverage, and daylight hours typically produce lowest absence on 1st shift in manufacturing environments.<br>
+          <strong>Agency use:</strong> Minimal — primarily covering planned PTO
+        </div>
+      </div>
+      <div class="shift-card critical">
+        <div class="shift-num">2nd shift · 2pm–10pm</div>
+        <div class="shift-rate amber">7.8%</div>
+        <div class="shift-label">Approaching threshold — monitor closely</div>
+        <div class="shift-bar-bg"><div class="shift-bar-fill" style="width:78%;background:var(--med);"></div></div>
+        <div class="shift-notes">
+          <strong>Headcount:</strong> ~105 direct + 25 agency<br>
+          <strong>Pattern:</strong> Escalating — January 6.9%, February 7.8%, March 8.7%<br>
+          <strong>Note:</strong> Mid-afternoon start creates childcare and personal scheduling conflicts. Supervisor bench strength on 2nd shift is thinner — injection molding supervisor vacancy has been open 90+ days.<br>
+          <strong>Agency use:</strong> Moderate — covering chronic callouts in molding
+        </div>
+      </div>
+      <div class="shift-card critical">
+        <div class="shift-num">3rd shift · 10pm–6am</div>
+        <div class="shift-rate red">11.3%</div>
+        <div class="shift-label">Critical — immediate intervention required</div>
+        <div class="shift-bar-bg"><div class="shift-bar-fill" style="width:100%;background:var(--high);"></div></div>
+        <div class="shift-notes">
+          <strong>Headcount:</strong> ~95 direct + 30 agency<br>
+          <strong>Pattern:</strong> Severely escalating — January 9.1%, February 11.0%, March 11.3%<br>
+          <strong>Note:</strong> Night shift fatigue, disrupted sleep cycles, and reduced management visibility are primary drivers. Agency dependency is highest on 3rd shift — 30+ agency workers represent approximately 32% of shift headcount.<br>
+          <strong>Agency use:</strong> High — agency presence may be reducing accountability culture on this shift
+        </div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Strategic HR insight — agency dependency risk:</strong> The staffing agency supplement has been essential for maintaining production output, but the data suggests a compounding dynamic: as agency presence increases on 2nd and 3rd shifts, absence accountability among direct employees may be declining. When employees know their absence will always be covered, the implicit consequence of calling out is reduced. A structured review of agency utilization strategy is recommended alongside the absence intervention plan.
+    </div>
+    <div class="card-footer">Apex Specialty Polymers Shift Analysis &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Portfolio Work Product 2025</div>
+  </div>
+
+</div>
+
+<div style="max-width:1000px;margin:0 auto;padding:0 2rem;">
+  <div class="page-footer">
+    <div class="page-footer-inner">
+      <div>
+        <div class="footer-brand">Laurie Wallace — HR Strategic Adviser</div>
+        <div class="footer-meta">
+          MBA · PHR · CCP · SHRM-CP<br>
+          Independent AI &amp; Workforce Research · Portfolio Work Product · 2025<br>
+          Philadelphia, PA · linkedin.com/in/laurie-w-hrprofessional · laurie-wallace-hr.netlify.app
+        </div>
+      </div>
+      <div class="footer-disclaimer">
+        Apex Specialty Polymers is a fictionalized case study developed for portfolio purposes. All data is simulated to reflect realistic manufacturing absence patterns. Framework and HR methodology represent independent practitioner research by Laurie Wallace.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+function showTab(t) {
+  const tabs = ['raw','heatmap','trend','coaching','rca','shift'];
+  tabs.forEach(id => {
+    document.getElementById('tab-'+id).style.display = id===t ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', tabs[i]===t);
+  });
+  if(t==='trend') buildChart();
+}
+
+let chartBuilt = false;
+function buildChart() {
+  if(chartBuilt) return;
+  chartBuilt = true;
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['January', 'February', 'March'],
+      datasets: [
+        { label: 'Production/Molding', data: [9.2, 8.8, 10.1], borderColor: '#C0392B', backgroundColor: 'rgba(192,57,43,0.08)', borderWidth: 2, pointRadius: 5, tension: 0.3 },
+        { label: 'Maintenance & Facilities', data: [7.6, 9.1, 10.4], borderColor: '#8B1A1A', backgroundColor: 'rgba(139,26,26,0.06)', borderWidth: 2, pointRadius: 5, tension: 0.3, borderDash: [4,2] },
+        { label: 'Quality Control', data: [5.8, 7.2, 8.9], borderColor: '#B7641A', backgroundColor: 'rgba(183,100,26,0.08)', borderWidth: 2, pointRadius: 5, tension: 0.3 },
+        { label: 'Shipping & Receiving', data: [8.4, 9.0, 8.7], borderColor: '#E24B4A', backgroundColor: 'rgba(226,75,74,0.06)', borderWidth: 2, pointRadius: 5, tension: 0.3 },
+        { label: 'Operations', data: [6.9, 7.4, 7.8], borderColor: '#BA7517', backgroundColor: 'rgba(186,117,23,0.06)', borderWidth: 2, pointRadius: 5, tension: 0.3 },
+        { label: 'HR/Payroll/Admin', data: [3.1, 3.4, 4.2], borderColor: '#1E7A45', backgroundColor: 'rgba(30,122,69,0.08)', borderWidth: 2, pointRadius: 5, tension: 0.3 },
+        { label: '8% Threshold', data: [8, 8, 8], borderColor: '#E24B4A', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 12 }, padding: 16, boxWidth: 20 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+      },
+      scales: {
+        y: {
+          min: 0, max: 13,
+          ticks: { callback: v => v+'%', font: { family: 'DM Mono', size: 11 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: { ticks: { font: { family: 'DM Sans', size: 12 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

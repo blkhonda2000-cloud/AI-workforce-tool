@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Management Layer Diagnostic — Laurie Wallace HR</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#F7F6F2;--surface:#FFFFFF;--surface2:#F0EEE8;--border:#E2DED4;
+--text:#1A1916;--text2:#6B6860;--text3:#9E9B94;
+--accent:#1D4E89;--accent-light:#E8EFF7;
+--high:#C0392B;--high-bg:#FDF2F1;--high-border:#F0B8B4;
+--med:#B7641A;--med-bg:#FDF5EC;--med-border:#F0D0A8;
+--low:#1E7A45;--low-bg:#EDF7F1;--low-border:#A8DDB8;
+--radius:10px;--radius-lg:16px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.site-header{background:var(--accent);color:white;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{font-size:13px;font-weight:500;letter-spacing:.04em;opacity:.9}
+.meta{font-size:12px;opacity:.65;font-family:'DM Mono',monospace}
+
+.hero{background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem}
+.hero-inner{max-width:900px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-family:'DM Mono',monospace}
+.hero h1{font-size:26px;font-weight:600;color:var(--text);line-height:1.25;margin-bottom:8px}
+.hero p{font-size:14px;color:var(--text2);line-height:1.6;max-width:640px;margin-bottom:1.25rem}
+.hero-meta{display:flex;gap:1.5rem;flex-wrap:wrap}
+.hmi{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.5}
+
+.main{max-width:900px;margin:0 auto;padding:2rem}
+
+.stats-bar{background:var(--accent-light);border:1px solid #C4D8EF;border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.stats-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:12px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-item{text-align:center}
+.stat-num{font-size:22px;font-weight:600;color:var(--accent);font-family:'DM Mono',monospace}
+.stat-lbl{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4}
+
+.paradox-box{background:var(--high-bg);border:1px solid var(--high-border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.paradox-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--high);font-family:'DM Mono',monospace;margin-bottom:8px}
+.paradox-text{font-size:13px;color:#7A2020;line-height:1.65}
+
+.time-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.tb-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:12px}
+.tb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tb-item{background:var(--surface2);border-radius:var(--radius);padding:10px 12px;text-align:center}
+.tb-pct{font-size:20px;font-weight:600;font-family:'DM Mono',monospace}
+.tb-pct.red{color:var(--high)}
+.tb-pct.amber{color:var(--med)}
+.tb-pct.green{color:var(--low)}
+.tb-pct.blue{color:var(--accent)}
+.tb-lbl{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.3}
+.tb-note{font-size:10px;color:var(--text3);margin-top:10px;font-style:italic;border-top:1px solid var(--border);padding-top:8px}
+
+.sec-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px}
+
+.input-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;display:block}
+.f-hint{font-size:11px;color:var(--text3);margin-bottom:6px;line-height:1.5}
+select,input[type=number]{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);outline:none}
+select:focus,input[type=number]:focus{border-color:var(--accent)}
+
+.slider-row{margin-bottom:1.25rem}
+.slider-row:last-child{margin-bottom:0}
+.slider-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.s-label{font-size:13px;font-weight:500;color:var(--text)}
+.s-benchmark{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.s-val{font-size:13px;font-weight:500;color:var(--accent);font-family:'DM Mono',monospace}
+.s-hint{font-size:11px;color:var(--text3);margin-bottom:6px;line-height:1.5}
+.scale-ends{display:flex;justify-content:space-between;margin-top:4px}
+.scale-ends span{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid white;box-shadow:0 0 0 1px var(--accent);transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid white}
+
+.run-btn{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:12px 24px;border-radius:var(--radius);border:1px solid var(--accent);background:var(--accent);color:white;cursor:pointer;width:100%;margin-bottom:1.75rem;transition:all .15s}
+.run-btn:hover{background:#163D6E;border-color:#163D6E}
+.run-btn:active{transform:scale(.99)}
+
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.metric-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;text-align:center}
+.m-lbl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.m-val{font-size:22px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.m-val.red{color:var(--high)}
+.m-val.amber{color:var(--med)}
+.m-val.green{color:var(--low)}
+.m-sub{font-size:10px;color:var(--text3);margin-top:3px}
+
+.rating-card{border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;border:1px solid}
+.rating-card.reactive{background:var(--high-bg);border-color:var(--high-border)}
+.rating-card.transitioning{background:var(--med-bg);border-color:var(--med-border)}
+.rating-card.ready{background:var(--low-bg);border-color:var(--low-border)}
+.rating-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px}
+.r-name{font-size:18px;font-weight:600;color:var(--text)}
+.r-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.risk-badge{font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.risk-badge.reactive{background:var(--high-bg);color:var(--high);border:1px solid var(--high-border)}
+.risk-badge.transitioning{background:var(--med-bg);color:var(--med);border:1px solid var(--med-border)}
+.risk-badge.ready{background:var(--low-bg);color:var(--low);border:1px solid var(--low-border)}
+.score-section{margin-bottom:1.25rem}
+.score-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.score-lbl{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.score-num{font-size:22px;font-weight:600;font-family:'DM Mono',monospace}
+.score-num.reactive{color:var(--high)}
+.score-num.transitioning{color:var(--med)}
+.score-num.ready{color:var(--low)}
+.score-bar-bg{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.score-bar-fill{height:10px;border-radius:5px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.fill-reactive{background:var(--high)}
+.fill-transitioning{background:var(--med)}
+.fill-ready{background:var(--low)}
+
+.result-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+.findings-list,.rec-list{list-style:none;padding:0;margin:0}
+.finding-item,.rec-item{font-size:13px;color:var(--text2);padding:6px 0 6px 20px;position:relative;line-height:1.6;border-bottom:.5px solid var(--border)}
+.finding-item:last-child,.rec-item:last-child{border-bottom:none}
+.finding-item::before{content:"→";position:absolute;left:0;color:var(--text3);font-size:11px;top:8px}
+.finding-item.warn::before{content:"!";color:var(--high);font-weight:700;font-size:13px;top:6px}
+.finding-item.good::before{content:"✓";color:var(--low);font-size:12px;top:7px}
+.rec-item::before{content:"★";position:absolute;left:0;color:var(--accent);font-size:10px;top:9px}
+
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:.5rem}
+.skill-card{background:var(--surface2);border-radius:var(--radius);padding:10px 12px}
+.sk-lbl{font-size:11px;font-weight:500;color:var(--accent);margin-bottom:3px}
+.sk-val{font-size:12px;color:var(--text2);line-height:1.4}
+
+.research-note{background:var(--accent-light);border:1px solid #C4D8EF;border-radius:var(--radius);padding:1rem 1.25rem;margin-top:.75rem}
+.rn-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:6px}
+.rn-items{list-style:none;padding:0;margin:0}
+.rn-item{font-size:12px;color:var(--text2);padding:2px 0 2px 12px;position:relative;line-height:1.5}
+.rn-item::before{content:"·";position:absolute;left:0;color:var(--accent);font-weight:700}
+
+.card-footer{border-top:.5px solid var(--border);padding-top:10px;margin-top:1rem;font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+
+.page-footer{border-top:1px solid var(--border);padding:1.5rem 0;max-width:900px;margin:2rem auto 0;padding-left:2rem;padding-right:2rem}
+.pf-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem}
+.pf-brand{font-size:13px;font-weight:500;color:var(--text)}
+.pf-meta{font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;line-height:1.7}
+.pf-disclaimer{font-size:11px;color:var(--text3);max-width:400px;line-height:1.6}
+
+@media(max-width:640px){
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.metrics-grid{grid-template-columns:repeat(2,1fr)}
+.grid2{grid-template-columns:1fr}
+.tb-grid{grid-template-columns:repeat(2,1fr)}
+.skills-grid{grid-template-columns:1fr 1fr}
+.main{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<span class="brand">Laurie Wallace &nbsp;·&nbsp; HR Strategic Adviser</span>
+<span class="meta">Portfolio Work Product &nbsp;·&nbsp; 2025</span>
+</header>
+
+<div class="hero">
+<div class="hero-inner">
+<div class="eyebrow">Organizational Design &nbsp;·&nbsp; AI Workforce Research</div>
+<h1>Management layer diagnostic tool</h1>
+<p>Assess your organization's vulnerability to AI-driven management layer flattening using current workforce research from Gartner, Deloitte, BCG, and Korn Ferry. Understand your risk level and what the data says about proactive versus reactive restructuring.</p>
+<div class="hero-meta">
+<div class="hmi"><div class="dot"></div>Gartner · Deloitte · BCG · Korn Ferry research</div>
+<div class="hmi"><div class="dot"></div>2025 workforce data</div>
+<div class="hmi"><div class="dot"></div>Fictionalized assessment framework</div>
+</div>
+</div>
+</div>
+
+<div class="main">
+
+<div class="stats-bar">
+<div class="stats-title">What current research shows — 2025</div>
+<div class="stats-grid">
+<div class="stat-item">
+<div class="stat-num">50%</div>
+<div class="stat-lbl">of middle management positions predicted eliminated by 2026 in 20% of organizations — Gartner</div>
+</div>
+<div class="stat-item">
+<div class="stat-num">42%</div>
+<div class="stat-lbl">decline in middle management job postings from spring 2022 to end of 2024 — Revelio Labs</div>
+</div>
+<div class="stat-item">
+<div class="stat-num">37%</div>
+<div class="stat-lbl">of manager time spent on administrative tasks and reactive problem solving — prime AI automation targets</div>
+</div>
+<div class="stat-item">
+<div class="stat-num">1.8x</div>
+<div class="stat-lbl">more likely to report better financial results with proactive vs reactive restructuring — BCG</div>
+</div>
+</div>
+</div>
+
+<div class="paradox-box">
+<div class="paradox-title">The restructuring reality — what most leaders do not know</div>
+<div class="paradox-text">Gartner tracked 1.4 million layoffs in 2025 and found that less than 1% were actually caused by AI productivity gains. Many organizations are using AI as cover for restructuring they wanted to implement for other reasons — creating significant risk of hollowing out leadership pipelines without genuine strategic design. Additionally, flattened organizations often exhibit more centralized control at the top — the exact opposite of the intended goal.</div>
+</div>
+
+<div class="time-breakdown">
+<div class="tb-title">How managers actually spend their time — research benchmark</div>
+<div class="tb-grid">
+<div class="tb-item">
+<div class="tb-pct red">21%</div>
+<div class="tb-lbl">Solving problems today — reactive firefighting</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct amber">16%</div>
+<div class="tb-lbl">Administrative tasks — scheduling, reporting, monitoring</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct blue">15%</div>
+<div class="tb-lbl">Strategic & future planning</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct blue">15%</div>
+<div class="tb-lbl">Stakeholder engagement</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct blue">14%</div>
+<div class="tb-lbl">Cross-team collaboration</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct green">13%</div>
+<div class="tb-lbl">People development & coaching</div>
+</div>
+<div class="tb-item">
+<div class="tb-pct blue">6%</div>
+<div class="tb-lbl">Other tasks</div>
+</div>
+<div class="tb-item" style="background:var(--high-bg);border:1px solid var(--high-border)">
+<div class="tb-pct red">37%</div>
+<div class="tb-lbl" style="color:#7A2020">Total automatable burden — admin + firefighting</div>
+</div>
+</div>
+<div class="tb-note">Source: Deloitte Human Capital Trends research · Only 26% of organizations report their managers are effective at enabling team performance — a direct result of the 13% development time allocation</div>
+</div>
+
+<p class="sec-label">Step 1 — Organization profile</p>
+<div class="input-card">
+<div class="grid2" style="margin-bottom:16px">
+<div>
+<label class="f-label">Total employees</label>
+<div class="f-hint">All full-time and part-time staff</div>
+<input type="number" id="emp" min="10" max="10000" value="200">
+</div>
+<div>
+<label class="f-label">Industry</label>
+<div class="f-hint">Select closest match</div>
+<select id="industry">
+<option value="mfg">Manufacturing</option>
+<option value="health">Healthcare</option>
+<option value="retail">Retail</option>
+<option value="prof">Professional services</option>
+<option value="logistics">Logistics & distribution</option>
+<option value="nonprofit">Nonprofit</option>
+<option value="finance">Financial services</option>
+<option value="tech">Technology</option>
+</select>
+</div>
+</div>
+<div class="grid2">
+<div>
+<label class="f-label">Current management layers</label>
+<div class="f-hint">Count from CEO to frontline worker — Citigroup reduced from 13 to 8; Microsoft targets 10:1 engineer-to-manager ratio</div>
+<input type="number" id="layers" min="2" max="12" value="6">
+</div>
+<div>
+<label class="f-label">Managers as % of workforce</label>
+<div class="f-hint">Approximate percentage of total headcount in management roles</div>
+<input type="number" id="mgr_pct" min="1" max="60" value="18">
+</div>
+</div>
+</div>
+
+<p class="sec-label">Step 2 — How managers currently spend their time</p>
+<div class="input-card">
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Administrative tasks</span>
+<span class="s-benchmark">Research benchmark: 16%</span>
+<span class="s-val" id="v1">16%</span>
+</div>
+<div class="s-hint">Scheduling, reporting, performance monitoring — Deloitte identifies this as 16% of manager time and a primary AI automation target</div>
+<input type="range" min="0" max="60" step="1" value="16" id="s1" oninput="sv(1)">
+<div class="scale-ends"><span>None</span><span>60% of time</span></div>
+</div>
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Reactive problem solving — firefighting</span>
+<span class="s-benchmark">Research benchmark: 21%</span>
+<span class="s-val" id="v2">21%</span>
+</div>
+<div class="s-hint">Solving daily operational problems reactively — research shows 21% of manager time and rising with increased spans of control</div>
+<input type="range" min="0" max="60" step="1" value="21" id="s2" oninput="sv(2)">
+<div class="scale-ends"><span>None</span><span>60% of time</span></div>
+</div>
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">People development & coaching</span>
+<span class="s-benchmark">Research benchmark: 13%</span>
+<span class="s-val" id="v3">13%</span>
+</div>
+<div class="s-hint">Mentoring, career conversations, performance coaching — only 13% on average yet directly boosts team performance by up to 27% when increased</div>
+<input type="range" min="0" max="60" step="1" value="13" id="s3" oninput="sv(3)">
+<div class="scale-ends"><span>None</span><span>60% of time</span></div>
+</div>
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Strategic planning & future work</span>
+<span class="s-benchmark">Research benchmark: 15%</span>
+<span class="s-val" id="v4">15%</span>
+</div>
+<div class="s-hint">Workforce planning, organizational design, contributing to business strategy — highest-value, least automatable activity</div>
+<input type="range" min="0" max="60" step="1" value="15" id="s4" oninput="sv(4)">
+<div class="scale-ends"><span>None</span><span>60% of time</span></div>
+</div>
+
+</div>
+
+<p class="sec-label">Step 3 — Organizational readiness</p>
+<div class="input-card">
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Current AI & automation adoption</span>
+<span class="s-val" id="v5">20%</span>
+</div>
+<div class="s-hint">How much administrative and scheduling work is currently handled by AI or automation — only 7% of organizations report making great progress on reinventing the manager role</div>
+<input type="range" min="0" max="100" step="5" value="20" id="s5" oninput="sv(5)">
+<div class="scale-ends"><span>None at all</span><span>Fully automated</span></div>
+</div>
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Workforce planning maturity</span>
+<span class="s-val" id="v6">30%</span>
+</div>
+<div class="s-hint">How proactively the organization plans for workforce changes — 73% of HR leaders recognize reinventing the manager role is important but only 7% are making great progress</div>
+<input type="range" min="0" max="100" step="5" value="30" id="s6" oninput="sv(6)">
+<div class="scale-ends"><span>Always reactive</span><span>Fully proactive</span></div>
+</div>
+
+<div class="slider-row">
+<div class="slider-top">
+<span class="s-label">Manager development investment</span>
+<span class="s-val" id="v7">25%</span>
+</div>
+<div class="s-hint">How actively the organization is developing managers toward insight, coaching, and strategic skills — 36% of managers feel insufficiently prepared for people management</div>
+<input type="range" min="0" max="100" step="5" value="25" id="s7" oninput="sv(7)">
+<div class="scale-ends"><span>No investment</span><span>Significant investment</span></div>
+</div>
+
+</div>
+
+<button class="run-btn" onclick="assess()">Run management layer diagnostic</button>
+
+<div id="resultWrap" style="display:none">
+
+<div class="metrics-grid">
+<div class="metric-card">
+<div class="m-lbl">Automatable workload</div>
+<div class="m-val" id="m1"></div>
+<div class="m-sub">of manager time</div>
+</div>
+<div class="metric-card">
+<div class="m-lbl">Managers at risk</div>
+<div class="m-val" id="m2"></div>
+<div class="m-sub">estimated positions</div>
+</div>
+<div class="metric-card">
+<div class="m-lbl">Annual salary exposure</div>
+<div class="m-val" id="m3"></div>
+<div class="m-sub">at-risk role cost</div>
+</div>
+<div class="metric-card">
+<div class="m-lbl">Collab cost burden</div>
+<div class="m-val" id="m4"></div>
+<div class="m-sub">est. annual overhead</div>
+</div>
+</div>
+
+<div class="rating-card" id="ratingCard">
+<div class="rating-top">
+<div>
+<div class="r-name" id="ratingName"></div>
+<div class="r-sub" id="ratingSub"></div>
+</div>
+<span class="risk-badge" id="riskBadge"></span>
+</div>
+<div class="score-section">
+<div class="score-top">
+<span class="score-lbl">Diagnostic risk score</span>
+<span class="score-num" id="scoreNum"></span>
+</div>
+<div class="score-bar-bg"><div class="score-bar-fill" id="scoreFill"></div></div>
+</div>
+<ul class="findings-list" id="findingsList"></ul>
+</div>
+
+<div class="result-section">
+<p class="sec-label">Priority actions</p>
+<ul class="rec-list" id="recList"></ul>
+</div>
+
+<div class="result-section">
+<p class="sec-label">What the research says about organizations at this stage</p>
+<ul class="rn-items" id="researchList"></ul>
+</div>
+
+<div class="result-section">
+<p class="sec-label">Skills that protect managers in a flattened structure</p>
+<div class="skills-grid">
+<div class="skill-card"><div class="sk-lbl">Judgment</div><div class="sk-val">Decisions where data is insufficient — AI cannot replicate contextual wisdom</div></div>
+<div class="skill-card"><div class="sk-lbl">Insight architecture</div><div class="sk-val">Synthesizing AI outputs into strategic business narratives — beyond reporting</div></div>
+<div class="skill-card"><div class="sk-lbl">Human coaching</div><div class="sk-val">Developing people boosts team performance by up to 27% — highest ROI activity</div></div>
+<div class="skill-card"><div class="sk-lbl">AI integration</div><div class="sk-val">Identifying which tasks are machine-driven vs human empathy and creativity</div></div>
+<div class="skill-card"><div class="sk-lbl">Connector mindset</div><div class="sk-val">Linking employees to experts across the organization to drive agility</div></div>
+<div class="skill-card"><div class="sk-lbl">Strategic contribution</div><div class="sk-val">Direct input to workforce planning and business strategy — not just execution</div></div>
+</div>
+<div class="research-note" style="margin-top:1rem">
+<div class="rn-title">Research context</div>
+<ul class="rn-items">
+<li class="rn-item">Bayer reduced 1,500+ roles in early 2024 — two thirds were management positions — saving an estimated $2.15 billion</li>
+<li class="rn-item">Citigroup reduced management layers from 13 to 8 as part of strategic restructuring</li>
+<li class="rn-item">Microsoft targets a 10:1 engineer-to-manager ratio — nearly double its current 5.5:1</li>
+<li class="rn-item">Novartis restructured to save $1 billion annually through proactive management redesign</li>
+<li class="rn-item">Companies with strong human management report up to 15% higher financial performance — Korn Ferry</li>
+</ul>
+</div>
+<div class="card-footer">
+<span>Management Layer Diagnostic Tool &nbsp;·&nbsp; Framework: Laurie Wallace HR Strategic Adviser &nbsp;·&nbsp; Independent Research 2025</span>
+<span>Sources: Gartner · Deloitte · BCG · Korn Ferry · Revelio Labs</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="page-footer">
+<div class="pf-inner">
+<div>
+<div class="pf-brand">Laurie Wallace — HR Strategic Adviser</div>
+<div class="pf-meta">MBA · PHR · CCP · SHRM-CP<br>Independent AI & Workforce Research · Portfolio Work Product · 2025<br>Philadelphia, PA · linkedin.com/in/laurie-w-hrprofessional</div>
+</div>
+<div class="pf-disclaimer">This diagnostic tool produces directional assessments based on published workforce research from Gartner, Deloitte, BCG, and Korn Ferry. Results are intended to inform strategic conversations — not replace organizational analysis conducted by qualified HR advisers. Individual organizational context always requires professional judgment beyond what any diagnostic tool can provide.</div>
+</div>
+</div>
+
+<script>
+const IND={
+mfg:{name:"Manufacturing",sal:72000,bench:4,accel:1.3},
+health:{name:"Healthcare",sal:78000,bench:5,accel:1.2},
+retail:{name:"Retail",sal:62000,bench:3,accel:1.4},
+prof:{name:"Professional services",sal:92000,bench:4,accel:1.1},
+logistics:{name:"Logistics & distribution",sal:68000,bench:4,accel:1.35},
+nonprofit:{name:"Nonprofit",sal:58000,bench:5,accel:0.9},
+finance:{name:"Financial services",sal:98000,bench:4,accel:1.2},
+tech:{name:"Technology",sal:115000,bench:3,accel:1.0}
+};
+
+function sv(i){
+document.getElementById('v'+i).textContent=document.getElementById('s'+i).value+'%';
+}
+
+function assess(){
+const emp=parseInt(document.getElementById('emp').value)||200;
+const layers=parseInt(document.getElementById('layers').value)||6;
+const mgr_pct=parseInt(document.getElementById('mgr_pct').value)||18;
+const ind=document.getElementById('industry').value;
+const D=IND[ind];
+
+const admin=parseInt(document.getElementById('s1').value);
+const fire=parseInt(document.getElementById('s2').value);
+const develop=parseInt(document.getElementById('s3').value);
+const strategic=parseInt(document.getElementById('s4').value);
+const aiAdopt=parseInt(document.getElementById('s5').value);
+const planning=parseInt(document.getElementById('s6').value);
+const mgDev=parseInt(document.getElementById('s7').value);
+
+const autoTotal=Math.min(100,admin+fire);
+const humanTotal=develop+strategic;
+const mgrCount=Math.round(emp*(mgr_pct/100));
+const atRisk=Math.round(mgrCount*(autoTotal/100)*0.55);
+const annualCost=atRisk*D.sal;
+const collabCost=Math.round(emp*25000/1000)*1000;
+
+const layerRisk=Math.max(0,Math.min(40,((layers-D.bench)/Math.max(1,D.bench))*40));
+const workloadRisk=Math.max(0,Math.min(35,(autoTotal/100)*35));
+const humanProtect=Math.max(0,Math.min(15,(humanTotal/30)*15));
+const readinessProtect=Math.max(0,Math.min(10,((aiAdopt+planning+mgDev)/300)*10));
+const rawScore=Math.round(layerRisk+workloadRisk-humanProtect-readinessProtect);
+const score=Math.max(5,Math.min(95,rawScore+20));
+
+const level=score>=60?'reactive':score>=35?'transitioning':'ready';
+
+document.getElementById('m1').textContent=autoTotal+'%';
+document.getElementById('m1').className='m-val '+(autoTotal>50?'red':autoTotal>35?'amber':'green');
+document.getElementById('m2').textContent=atRisk;
+document.getElementById('m2').className='m-val '+(atRisk>mgrCount*0.5?'red':atRisk>mgrCount*0.3?'amber':'green');
+document.getElementById('m3').textContent='$'+Math.round(annualCost/1000)+'K';
+document.getElementById('m3').className='m-val '+(annualCost>500000?'red':annualCost>200000?'amber':'green');
+document.getElementById('m4').textContent='$'+Math.round(collabCost/1000)+'K';
+document.getElementById('m4').className='m-val amber';
+
+const rc=document.getElementById('ratingCard');
+rc.className='rating-card '+level;
+const rb=document.getElementById('riskBadge');
+rb.className='risk-badge '+level;
+
+const labels={
+reactive:{name:'Reactive risk zone',sub:'Significant exposure to disruptive AI-driven restructuring without a plan',badge:'High risk'},
+transitioning:{name:'Transitioning',sub:'Beginning to adapt — proactive planning required now to avoid reactive costs',badge:'Medium risk'},
+ready:{name:'Architecture-ready',sub:'Well positioned for intentional AI-driven restructuring',badge:'Low risk'}
+};
+
+document.getElementById('ratingName').textContent=labels[level].name;
+document.getElementById('ratingSub').textContent=labels[level].sub;
+rb.textContent=labels[level].badge;
+
+const sn=document.getElementById('scoreNum');
+sn.textContent=score+' / 100';
+sn.className='score-num '+level;
+const sf=document.getElementById('scoreFill');
+sf.style.width=score+'%';
+sf.className='score-bar-fill fill-'+level;
+
+const findings={
+reactive:[
+{t:'warn',text:'Your '+layers+' management layers exceed the research benchmark of '+D.bench+' for '+D.name+' organizations — '+Math.max(0,layers-D.bench)+' layer'+(layers-D.bench>1?'s':'')+' above optimal'},
+{t:'warn',text:autoTotal+'% of manager time is spent on administrative tasks and reactive firefighting — both prime AI automation targets per Deloitte research'},
+{t:'warn',text:'With '+atRisk+' managers in highly automatable roles, reactive restructuring will cost significantly more than a proactive plan — BCG research shows 1.8x better financial outcomes for proactive organizations'},
+{t:'warn',text:'The "vicious cycle" risk: reactive organizations cut headcount, high costs remain, revenue drops from customer defections, then they rehire at consultant rates — sometimes $65/hour for roles previously paid $15/hour'},
+{t:'',text:'Only 26% of organizations report managers are effective at enabling team performance — a direct result of the '+develop+'% time currently spent on development versus the '+autoTotal+'% on automatable tasks'},
+{t:'warn',text:'The junior cliff risk: eliminating entry-level roles destroys the training ground for future leaders — 1 in 3 companies expect entry-level roles eliminated by AI by end of 2026'}
+],
+transitioning:[
+{t:'',text:'Your layer count of '+layers+' is approaching but not yet at the AI-era benchmark of '+D.bench+' for '+D.name+' — monitoring is warranted'},
+{t:'warn',text:autoTotal+'% of manager time on automatable work will accelerate as AI tools improve — begin systematic reduction now'},
+{t:'',text:'Current AI adoption at '+aiAdopt+'% provides a partial buffer — expand intentionally before external pressure forces reactive decisions'},
+{t:'',text:'Workforce planning maturity at '+planning+'% indicates some proactive capacity — build formal restructuring roadmap on this foundation'},
+{t:'',text:'The transition window is open — organizations that act now capture savings and retain talent; those that wait face the vicious cycle of reactive costs'},
+{t:'',text:'73% of HR leaders recognize reinventing the manager role is important — only 7% are making great progress — you have an opportunity to be in that 7%'}
+],
+ready:[
+{t:'good',text:'Your management structure of '+layers+' layers is near or at the AI-era benchmark of '+D.bench+' for '+D.name},
+{t:'good',text:'People development time of '+develop+'% and strategic time of '+strategic+'% indicate managers are spending meaningful time on protected high-value activities'},
+{t:'good',text:'AI adoption at '+aiAdopt+'% and planning maturity at '+planning+'% suggest organizational readiness for intentional next steps'},
+{t:'',text:'Companies with strong human management report up to 15% higher financial performance — Korn Ferry — your structure supports this'},
+{t:'',text:'Focus now on formalizing your transition methodology — you are ahead of most organizations and this is replicable advantage'},
+{t:'good',text:'The flattening paradox warning: even ready organizations must guard against decision rights centralizing upward — monitor for shadow hierarchies forming'}
+]
+};
+
+const recs={
+reactive:[
+'Conduct immediate layer-by-layer audit identifying which roles are most automatable using the Deloitte 16%+21% administrative and firefighting benchmark',
+'Begin Supermanager transition planning for your highest-performing middle managers before restructuring creates retention crisis — spans of control tripling without preparation causes burnout',
+'Implement AI tools for scheduling and reporting immediately — demonstrate the automation opportunity to leadership with real data before external pressure forces reactive decisions',
+'Calculate the full financial case: proactive restructuring cost versus reactive vicious cycle cost — BCG research shows 1.8x better financial outcomes for proactive organizations',
+'Address the junior cliff risk — do not eliminate entry-level roles without building alternative leadership development pathways first',
+'Increase manager development time from current '+develop+'% toward 25%+ — research shows this directly boosts team performance by up to 27%'
+],
+transitioning:[
+'Formalize a 12-month management layer redesign roadmap with clear milestones — 73% of leaders recognize the need but only 7% are making progress',
+'Identify top 20% of managers and begin Insight Architecture and human coaching development immediately — these are the skills that survive flattening',
+'Expand AI automation in administrative and firefighting functions first — use the freed capacity to shift managers toward development and strategic work',
+'Design internal mobility pathways now — the traditional promotion ladder is breaking and high performers will leave without visible alternatives',
+'Guard against the flattening paradox: monitor whether decision-making is centralizing upward as layers are removed — this is the opposite of the intended outcome',
+'Build the financial case for leadership: proactive organizations show higher ROA and up to 15% better financial performance than reactive counterparts'
+],
+ready:[
+'Document your transition methodology — you are ahead of most organizations and this is replicable intellectual capital',
+'Focus Supermanager development on Insight Architecture, connector mindset, and human-AI integration — the six protected skills identified in current research',
+'Guard actively against shadow hierarchy formation — formal flattening without redesigning decision rights often recreates informal layers',
+'Build succession pipeline for the reduced management structure before transition completes — the junior cliff is a real risk even for ready organizations',
+'Consider becoming an early public case study — organizations that lead this transition visibly gain competitive talent advantage',
+'Continuously monitor the 1% reality: ensure restructuring decisions are genuinely AI-driven not AI-rationalized — integrity of the transition matters for culture'
+]
+};
+
+const research={
+reactive:[
+'Gartner: 20% of organizations will eliminate 50%+ of middle management positions through 2026',
+'Revelio Labs: 42% decline in middle management job postings from 2022 peak to end of 2024',
+'BCG: Proactive restructurers are 1.8x more likely to report better financial results than reactive organizations',
+'Deloitte: Only 26% of organizations report managers are effective at enabling team performance',
+'Gartner: Less than 1% of 1.4 million 2025 layoffs were actually caused by AI productivity gains — most are strategic repositioning'
+],
+transitioning:[
+'Korn Ferry: 41% of employees report their companies have already reduced managerial layers',
+'Deloitte: 73% of HR leaders say reinventing the manager role is important — only 7% report great progress',
+'BCG: Organizations with strong human management report up to 15% higher financial performance',
+'Research: Unnecessary meetings cost approximately $25,000 per employee per year — a direct consequence of management layer bloat',
+'Deloitte: Managers spend only 13% of time on people development — directly linked to low team performance enablement rates'
+],
+ready:[
+'Citigroup: Reduced management layers from 13 to 8 as part of strategic restructuring — a documented successful transition',
+'Novartis: Proactive management restructuring saved $1 billion annually',
+'Microsoft: Targets 10:1 engineer-to-manager ratio — nearly double current 5.5:1 — through intentional redesign',
+'Korn Ferry: Companies with strong human management report up to 15% higher financial performance than those with weaker management',
+'BCG: High-performing teams are 2.5x as likely to support a culture of apprenticeship — key to rebuilding pipelines in flat structures'
+]
+};
+
+const fl=document.getElementById('findingsList');
+fl.innerHTML=findings[level].map(f=>`<li class="finding-item ${f.t}">${f.text}</li>`).join('');
+
+const rl=document.getElementById('recList');
+rl.innerHTML=recs[level].map(r=>`<li class="rec-item">${r}</li>`).join('');
+
+const resl=document.getElementById('researchList');
+resl.innerHTML=research[level].map(r=>`<li class="rn-item">${r}</li>`).join('');
+
+document.getElementById('resultWrap').style.display='block';
+document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>

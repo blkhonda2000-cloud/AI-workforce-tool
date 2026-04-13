@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic AI Governance Framework</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    background-color: #f0f4f8;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container {
+        height: 380px;
+    }
+}
+.timeline-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    position: absolute;
+    left: -10px;
+    top: 5px;
+    border: 4px solid #eff6ff;
+}
+.timeline-item {
+    position: relative;
+    padding-left: 2rem;
+    border-left: 2px solid #bfdbfe;
+    padding-bottom: 1.5rem;
+}
+.timeline-item:last-child {
+    border-left: 2px solid transparent;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+</style>
+</head>
+<body class="antialiased pb-12">
+
+<header class="bg-blue-900 text-white py-12 px-6 shadow-md border-b-4 border-blue-500">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex-1">
+                <span class="inline-block py-1 px-3 rounded-full bg-blue-800 text-blue-100 text-sm font-semibold tracking-wider mb-4 uppercase shadow-sm">Executive Cheat Sheet</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Strategic AI Governance Framework</h1>
+                <p class="text-xl text-blue-200 mb-2 max-w-2xl leading-relaxed">Enabling innovation through Generative AI while mitigating risks related to data privacy, algorithmic bias, and operational drift.</p>
+                <p class="text-sm font-medium text-blue-300 mt-4">Prepared by: Laurie Wallace, MBA, PHR, CCP</p>
+            </div>
+            <div class="hidden md:flex flex-col gap-4 text-center bg-blue-800 p-6 rounded-2xl shadow-inner border border-blue-700">
+                <div class="text-5xl">🛡️</div>
+                <div class="text-lg font-bold">Protecting Liability</div>
+                <div class="text-sm text-blue-200">Sector-Agnostic Rules</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 -mt-8 relative z-10">
+
+    <section class="glass-card rounded-2xl shadow-xl p-8 mb-10 text-center flex flex-col items-center">
+        <h2 class="text-2xl font-bold text-slate-800 mb-4">Why This Framework Matters</h2>
+        <p class="text-slate-600 max-w-3xl text-lg mb-8">By implementing a distinct Risk Tiering System, we eliminate the confusion surrounding AI tools. This one-page structure empowers managers to safely innovate without exposing the organization to legal, ethical, or security vulnerabilities.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col items-center">
+                <span class="text-4xl mb-3">✅</span>
+                <h3 class="font-bold text-blue-900 text-xl mb-1">Clear Boundaries</h3>
+                <p class="text-sm text-slate-600 text-center">Removes overwhelm by explicitly stating what is permitted and what is prohibited.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col items-center">
+                <span class="text-4xl mb-3">🧠</span>
+                <h3 class="font-bold text-blue-900 text-xl mb-1">Architect Thinking</h3>
+                <p class="text-sm text-slate-600 text-center">Goes beyond using tools; builds a department safe from algorithmic lawsuits.</p>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col items-center">
+                <span class="text-4xl mb-3">🔄</span>
+                <h3 class="font-bold text-blue-900 text-xl mb-1">Universal Application</h3>
+                <p class="text-sm text-slate-600 text-center">Adaptable from Healthcare to Construction — these core rules protect any enterprise.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <div class="mb-6">
+            <h2 class="text-3xl font-extrabold text-slate-800 flex items-center gap-3">
+                <span class="text-3xl">🚥</span> 1. The Risk Tiering System
+            </h2>
+            <p class="text-slate-600 mt-2 text-lg">A simple Red-Yellow-Green framework designed for quick managerial decision-making.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl shadow-lg border-t-8 border-green-500 p-6 transform transition hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-green-100 text-green-700 p-3 rounded-full text-2xl">🟢</div>
+                    <h3 class="text-2xl font-bold text-slate-800">Low Impact</h3>
+                </div>
+                <ul class="space-y-3 mb-6 text-slate-600">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✔</span> Drafting standard emails</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✔</span> Brainstorming meeting agendas</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✔</span> Summarizing public articles</li>
+                </ul>
+                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <span class="block text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Required Action</span>
+                    <span class="text-green-900 font-semibold">Permitted with standard review.</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg border-t-8 border-yellow-400 p-6 transform transition hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-yellow-100 text-yellow-700 p-3 rounded-full text-2xl">🟡</div>
+                    <h3 class="text-2xl font-bold text-slate-800">High Impact</h3>
+                </div>
+                <ul class="space-y-3 mb-6 text-slate-600">
+                    <li class="flex items-start gap-2"><span class="text-yellow-600 mt-1">⚠</span> Resume & candidate screening</li>
+                    <li class="flex items-start gap-2"><span class="text-yellow-600 mt-1">⚠</span> Performance review drafting</li>
+                    <li class="flex items-start gap-2"><span class="text-yellow-600 mt-1">⚠</span> Compensation modeling</li>
+                </ul>
+                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <span class="block text-xs font-bold text-yellow-800 uppercase tracking-wider mb-1">Required Action</span>
+                    <span class="text-yellow-900 font-semibold">Requires AI Impact Statement & 100% human-in-the-loop verification.</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg border-t-8 border-red-500 p-6 transform transition hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-red-100 text-red-700 p-3 rounded-full text-2xl">🔴</div>
+                    <h3 class="text-2xl font-bold text-slate-800">Prohibited</h3>
+                </div>
+                <ul class="space-y-3 mb-6 text-slate-600">
+                    <li class="flex items-start gap-2"><span class="text-red-500 mt-1">✖</span> Inputting company trade secrets</li>
+                    <li class="flex items-start gap-2"><span class="text-red-500 mt-1">✖</span> Processing Social Security Numbers</li>
+                    <li class="flex items-start gap-2"><span class="text-red-500 mt-1">✖</span> Non-public financial data analysis</li>
+                </ul>
+                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <span class="block text-xs font-bold text-red-800 uppercase tracking-wider mb-1">Required Action</span>
+                    <span class="text-red-900 font-semibold">Strictly forbidden in public tools (e.g., ChatGPT, Gemini).</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <section class="glass-card rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3 mb-4">
+                <span class="text-3xl">📊</span> Projected Workflow Distribution
+            </h2>
+            <p class="text-slate-600 mb-6">Analyzing expected AI usage across the HR lifecycle demonstrates why robust governance for high-impact (yellow) tasks is critical. While low-risk tasks represent the highest volume, high-risk tasks carry the greatest liability.</p>
+            <div class="chart-container">
+                <canvas id="usageChart"></canvas>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3 mb-4">
+                <span class="text-3xl">🔒</span> 2. Data Privacy & Security Guardrails
+            </h2>
+            <p class="text-slate-600 mb-6">Protecting organizational assets requires a strict delineation between public experimentation and secure enterprise operations.</p>
+            
+            <div class="flex flex-col gap-6">
+                <div class="flex items-start gap-4 p-5 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="text-4xl">🌐</div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-1">Public vs. Private Models</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">Employees are absolutely prohibited from entering any proprietary company data into public AI models. Public tools ingest data for training, effectively making private data public.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4 p-5 bg-blue-50 rounded-xl border border-blue-200">
+                    <div class="text-4xl">🏢</div>
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-900 mb-1">Secure Enterprise Environments</h4>
+                        <p class="text-blue-800 text-sm leading-relaxed">Sensitive HR analysis must be conducted <strong>only</strong> within approved, enterprise-grade systems that maintain strict data isolation (e.g., FedRAMP compliant solutions).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+        <section class="lg:col-span-5 glass-card rounded-2xl shadow-lg p-8 flex flex-col justify-center">
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3 mb-4">
+                <span class="text-3xl">👥</span> 3. Accountability & Transparency
+            </h2>
+            <p class="text-slate-600 mb-6">AI is an assistant, not a manager. Final decisions impacting human livelihoods must remain strictly in human hands.</p>
+            
+            <div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6 rounded-xl shadow-md mb-6 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 text-7xl opacity-20">⚖️</div>
+                <h4 class="text-xl font-bold mb-2">The "Human-in-the-Loop" Mandate</h4>
+                <p class="text-blue-100 text-sm">AI shall not be used to make final "Life-Cycle" decisions (hiring, firing, or disciplinary actions) without comprehensive, independent human validation.</p>
+            </div>
+
+            <div class="border-l-4 border-yellow-500 pl-4 py-2">
+                <h4 class="text-lg font-bold text-slate-800 mb-1">Mandatory Labeling</h4>
+                <p class="text-slate-600 text-sm italic">"This document was AI-assisted and human-verified."</p>
+                <p class="text-slate-500 text-xs mt-2">Any report or document materially created by AI must bear this label to ensure transparency with stakeholders.</p>
+            </div>
+        </section>
+
+        <section class="lg:col-span-7 glass-card rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Decision Authority Breakdown</h2>
+            <p class="text-slate-600 mb-6">Visualizing the required level of human intervention across different AI-assisted outputs.</p>
+            <div class="chart-container">
+                <canvas id="accountabilityChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <section class="glass-card rounded-2xl shadow-lg p-8 mb-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+            <h2 class="text-3xl font-bold text-slate-800 flex items-center justify-center gap-3 mb-4">
+                <span class="text-3xl">🔄</span> 4. Continuous Monitoring
+            </h2>
+            <p class="text-slate-600 text-lg">AI models evolve. Our governance cannot remain static. Organizations must perform quarterly Bias and Drift audits to ensure AI outputs remain aligned with company ethics and legal standards.</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <h3 class="text-xl font-bold text-blue-900">Q1: Algorithmic Bias Assessment</h3>
+                <p class="text-slate-600 mt-1">Reviewing recruiting and screening models for disparate impact across protected demographic classes. Adjusting prompts and weights as necessary.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <h3 class="text-xl font-bold text-blue-900">Q2: Operational Drift Audit</h3>
+                <p class="text-slate-600 mt-1">Evaluating if the AI output quality has degraded or shifted away from initial performance baselines.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <h3 class="text-xl font-bold text-blue-900">Q3: Data Privacy Verification</h3>
+                <p class="text-slate-600 mt-1">Auditing logs of public AI tools to ensure zero leakage of proprietary data, SSNs, or financials. Reinforcing employee training.</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <h3 class="text-xl font-bold text-blue-900">Q4: Comprehensive Framework Review</h3>
+                <p class="text-slate-600 mt-1">Updating the Acceptable Use Policy based on new legislation, technological advancements, and internal audit findings from Q1-Q3.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    const wrapLabel = (label) => {
+        if (label.length <= 16) return label;
+        let words = label.split(' ');
+        let lines = [];
+        let currentLine = words[0];
+        for (let i = 1; i < words.length; i++) {
+            if (currentLine.length + words[i].length + 1 <= 16) {
+                currentLine += ' ' + words[i];
+            } else {
+                lines.push(currentLine);
+                currentLine = words[i];
+            }
+        }
+        lines.push(currentLine);
+        return lines;
+    };
+
+    const tooltipConfig = {
+        callbacks: {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) { return label.join(' '); } else { return label; }
+            }
+        }
+    };
+
+    const usageRawLabels = ['General Emails', 'Meeting Agendas', 'Candidate Summaries', 'Performance Drafts', 'Comp Modeling', 'Financial Analysis'];
+    const usageWrappedLabels = usageRawLabels.map(wrapLabel);
+    const usageCtx = document.getElementById('usageChart').getContext('2d');
+    new Chart(usageCtx, {
+        type: 'bar',
+        data: {
+            labels: usageWrappedLabels,
+            datasets: [{
+                label: 'Est. Monthly Operations',
+                data: [450, 320, 180, 150, 45, 0],
+                backgroundColor: ['#10B981','#10B981','#F59E0B','#F59E0B','#F59E0B','#EF4444'],
+                borderRadius: 6,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: tooltipConfig },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#e2e8f0' }, title: { display: true, text: 'Volume of Tasks', font: { weight: 'bold' } } },
+                x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: false } }
+            }
+        }
+    });
+
+    const accRawLabels = ['Human Draft / Human Final', 'AI Draft / Human Final', 'AI Draft / AI Final (Prohibited)'];
+    const accWrappedLabels = accRawLabels.map(wrapLabel);
+    const accCtx = document.getElementById('accountabilityChart').getContext('2d');
+    new Chart(accCtx, {
+        type: 'doughnut',
+        data: {
+            labels: accWrappedLabels,
+            datasets: [{ data: [30, 70, 0], backgroundColor: ['#3B82F6','#1E3A8A','#EF4444'], borderWidth: 2, borderColor: '#ffffff' }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: { position: 'bottom', labels: { padding: 20, font: { family: "'Segoe UI', sans-serif" } } },
+                tooltip: tooltipConfig
+            }
+        }
+    });
+</script>
+</body>
+</html>
